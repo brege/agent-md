@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CLAUDE_DIR="$HOME/.claude"
+
+echo "Initializing global Claude Code configuration..."
+
+mkdir -p "$CLAUDE_DIR"
+
+cp "$SCRIPT_DIR/shared/base-CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
+echo "Deployed: $CLAUDE_DIR/CLAUDE.md"
+
+cp "$SCRIPT_DIR/shared/base-settings.json" "$CLAUDE_DIR/settings.json"
+echo "Deployed: $CLAUDE_DIR/settings.json"
+
+echo "Done. Global configuration initialized."

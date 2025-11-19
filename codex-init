@@ -1,0 +1,62 @@
+#!/bin/bash
+
+set -euo pipefail
+
+src_claude="$HOME/.claude/CLAUDE.md"
+src_settings="$HOME/.claude/settings.json"
+
+if [ ! -f "$src_claude" ]; then
+    echo "$src_claude not found"
+    exit 1
+fi
+
+cp "$src_claude" AGENTS.md
+
+if [ ! -f "$src_settings" ]; then
+    echo "$src_settings not found"
+    exit 0
+fi
+
+# auto-imported restrictions
+# derive these from ~/.claude/settings.json
+
+jq -r '.permissions.deny[]' "$src_settings" | while read -r rule; do
+    case "$rule" in
+
+        Bash\(*)
+            cmd="${rule#Bash(}"
+            cmd="${cmd%:*)}"
+            printf '%s\n' "- Never run '$cmd' or any command matching it." >> AGENTS.md
+            ;;
+
+        Read\(*)
+            path="${rule#Read(}"
+            path="${path%) }"
+            printf '%s\n' "- Never read files matching $path." >> AGENTS.md
+            ;;
+
+        Edit\(*)
+            path="${rule#Edit(}"
+            path="${path%) }"
+            printf '%s\n' "- Never edit files matching $path." >> AGENTS.md
+            ;;
+
+        Write\(*)
+            path="${rule#Write(}"
+            path="${path%) }"
+            printf '%s\n' "- Never write to files matching $path." >> AGENTS.md
+            ;;
+
+        Glob\(*)
+            path="${rule#Glob(}"
+            path="${path%) }"
+            printf '%s\n' "- Never enumerate file paths matching $path." >> AGENTS.md
+            ;;
+
+        *)
+            printf '%s\n' "- Deny: $rule" >> AGENTS.md
+            ;;
+
+    esac
+done
+
