@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CLAUDE_DIR="$HOME/.claude"
+
+mkdir -p "$CLAUDE_DIR"
+
+echo "Initializing global Claude Code configuration..."
+
+# Symlink directories for live updates
+for dir in instructions agents; do
+    src="$SCRIPT_DIR/$dir"
+    dest="$CLAUDE_DIR/$dir"
+
+    if [[ ! -L "$dest" ]] || [[ "$(readlink "$dest")" != "$src" ]]; then
+        rm -rf "$dest"
+        ln -s "$src" "$dest"
+        echo "linked: $dir"
+    fi
+done
+
+# Copy config files only if changed
+for config in CLAUDE.md settings.json; do
+    src="$SCRIPT_DIR/shared/base-$config"
+    dest="$CLAUDE_DIR/$config"
+
+    if [[ ! -f "$dest" ]] || ! cmp -s "$src" "$dest"; then
+        cp "$src" "$dest"
+        echo "updated: $config"
+    fi
+done
+
+echo "Done. Global configuration initialized."
