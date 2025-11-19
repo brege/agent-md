@@ -1,4 +1,4 @@
-# Claude Code Configuration
+@agent-title
 
 This file contains hard rules for Claude Code behavior. Rules in this file always take precedence over defaults and settings files.
 

@@ -2,61 +2,73 @@
 
 set -euo pipefail
 
-src_claude="$HOME/.claude/CLAUDE.md"
-src_settings="$HOME/.claude/settings.json"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [ ! -f "$src_claude" ]; then
-    echo "$src_claude not found"
+src_template="$SCRIPT_DIR/shared/base-AGENTS.md"
+src_claude="$SCRIPT_DIR/shared/base-CLAUDE.md"
+src_settings="$SCRIPT_DIR/shared/base-settings.json"
+
+if [[ ! -f "$src_template" ]]; then
+    echo "error: $src_template not found" >&2
     exit 1
 fi
 
-cp "$src_claude" AGENTS.md
-
-if [ ! -f "$src_settings" ]; then
-    echo "$src_settings not found"
-    exit 0
+if [[ ! -f "$src_claude" ]]; then
+    echo "error: $src_claude not found" >&2
+    exit 1
 fi
 
-# auto-imported restrictions
-# derive these from ~/.claude/settings.json
+if [[ ! -f "$src_settings" ]]; then
+    echo "error: $src_settings not found" >&2
+    exit 1
+fi
 
-jq -r '.permissions.deny[]' "$src_settings" | while read -r rule; do
-    case "$rule" in
+# Create temp files
+tmp_instr=$(mktemp)
+tmp_restr=$(mktemp)
+tmp_out=$(mktemp)
+trap "rm -f $tmp_instr $tmp_restr $tmp_out" EXIT
 
-        Bash\(*)
-            cmd="${rule#Bash(}"
-            cmd="${cmd%:*)}"
-            printf '%s\n' "- Never run '$cmd' or any command matching it." >> AGENTS.md
-            ;;
+# Expand @instructions/* references in CLAUDE.md
+while IFS= read -r line; do
+    if [[ $line =~ ^@instructions/(.+)\.md$ ]]; then
+        include_file="$SCRIPT_DIR/instructions/${BASH_REMATCH[1]}.md"
+        if [[ -f "$include_file" ]]; then
+            tail -n +2 "$include_file" | awk 'NF {p=1} p'
+        else
+            echo "$line"
+        fi
+    else
+        echo "$line"
+    fi
+done < "$src_claude" > "$tmp_instr"
 
-        Read\(*)
-            path="${rule#Read(}"
-            path="${path%) }"
-            printf '%s\n' "- Never read files matching $path." >> AGENTS.md
-            ;;
+# Build restrictions from settings
+{
+    echo "## Enforced Restrictions"
+    echo ""
+    jq -r '.permissions.deny[]' "$src_settings" | while read -r rule; do
+        case "$rule" in
+            Bash\(*) cmd="${rule#Bash(}"; cmd="${cmd%:*)}"; echo "- Never run '$cmd' or any command matching it." ;;
+            Read\(*) path="${rule#Read(}"; path="${path%) }"; echo "- Never read files matching $path." ;;
+            Edit\(*) path="${rule#Edit(}"; path="${path%) }"; echo "- Never edit files matching $path." ;;
+            Write\(*) path="${rule#Write(}"; path="${path%) }"; echo "- Never write to files matching $path." ;;
+            Glob\(*) path="${rule#Glob(}"; path="${path%) }"; echo "- Never enumerate file paths matching $path." ;;
+            *) echo "- Deny: $rule" ;;
+        esac
+    done
+} > "$tmp_restr"
 
-        Edit\(*)
-            path="${rule#Edit(}"
-            path="${path%) }"
-            printf '%s\n' "- Never edit files matching $path." >> AGENTS.md
-            ;;
+# Replace @agent-title in instructions content
+sed -i "s/@agent-title/# Codex Agent Configuration/" "$tmp_instr"
 
-        Write\(*)
-            path="${rule#Write(}"
-            path="${path%) }"
-            printf '%s\n' "- Never write to files matching $path." >> AGENTS.md
-            ;;
+# Replace templates in base-AGENTS.md
+cp "$src_template" "$tmp_out"
+sed -i "/@instructions/r $tmp_instr" "$tmp_out"
+sed -i "/@instructions/d" "$tmp_out"
+sed -i "/@restrictions/r $tmp_restr" "$tmp_out"
+sed -i "/@restrictions/d" "$tmp_out"
 
-        Glob\(*)
-            path="${rule#Glob(}"
-            path="${path%) }"
-            printf '%s\n' "- Never enumerate file paths matching $path." >> AGENTS.md
-            ;;
+mv "$tmp_out" AGENTS.md
 
-        *)
-            printf '%s\n' "- Deny: $rule" >> AGENTS.md
-            ;;
-
-    esac
-done
-
+echo "Generated AGENTS.md from agent-configs"
