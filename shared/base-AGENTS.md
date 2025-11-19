@@ -1,3 +1,5 @@
+@local-claude
+
 @instructions
 
 @restrictions

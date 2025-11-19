@@ -24,12 +24,29 @@ if [[ ! -f "$src_settings" ]]; then
 fi
 
 # Create temp files
+tmp_local=$(mktemp)
 tmp_instr=$(mktemp)
 tmp_restr=$(mktemp)
 tmp_out=$(mktemp)
-trap "rm -f $tmp_instr $tmp_restr $tmp_out" EXIT
+trap "rm -f $tmp_local $tmp_instr $tmp_restr $tmp_out" EXIT
 
-# Expand @instructions/* references in CLAUDE.md
+# Process local CLAUDE.md if it exists
+if [[ -f "./.claude/CLAUDE.md" ]]; then
+    while IFS= read -r line; do
+        if [[ $line =~ ^@instructions/(.+)\.md$ ]]; then
+            include_file="$SCRIPT_DIR/instructions/${BASH_REMATCH[1]}.md"
+            if [[ -f "$include_file" ]]; then
+                tail -n +2 "$include_file" | awk 'NF {p=1} p'
+            else
+                echo "$line"
+            fi
+        else
+            echo "$line"
+        fi
+    done < "./.claude/CLAUDE.md" > "$tmp_local"
+fi
+
+# Expand @instructions/* references in base CLAUDE.md
 while IFS= read -r line; do
     if [[ $line =~ ^@instructions/(.+)\.md$ ]]; then
         include_file="$SCRIPT_DIR/instructions/${BASH_REMATCH[1]}.md"
@@ -64,6 +81,14 @@ sed -i "s/@agent-title/# Codex Agent Configuration/" "$tmp_instr"
 
 # Replace templates in base-AGENTS.md
 cp "$src_template" "$tmp_out"
+
+# Handle @local-claude
+if [[ -s "$tmp_local" ]]; then
+    sed -i "/@local-claude/r $tmp_local" "$tmp_out"
+fi
+sed -i "/@local-claude/d" "$tmp_out"
+
+# Handle @instructions and @restrictions
 sed -i "/@instructions/r $tmp_instr" "$tmp_out"
 sed -i "/@instructions/d" "$tmp_out"
 sed -i "/@restrictions/r $tmp_restr" "$tmp_out"
