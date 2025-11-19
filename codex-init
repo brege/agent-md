@@ -60,11 +60,18 @@ while IFS= read -r line; do
     fi
 done < "$src_claude" > "$tmp_instr"
 
-# Build restrictions from settings
+# Build restrictions from settings (base + local)
 {
     echo "## Enforced Restrictions"
     echo ""
-    jq -r '.permissions.deny[]' "$src_settings" | while read -r rule; do
+
+    # Collect and deduplicate deny rules from base and local settings
+    {
+        jq -r '.permissions.deny[]' "$src_settings" 2>/dev/null
+        if [[ -f "./.claude/settings.local.json" ]]; then
+            jq -r '.permissions.deny[]' "./.claude/settings.local.json" 2>/dev/null
+        fi
+    } | sort -u | while read -r rule; do
         case "$rule" in
             Bash\(*) cmd="${rule#Bash(}"; cmd="${cmd%:*)}"; echo "- Never run '$cmd' or any command matching it." ;;
             Read\(*) path="${rule#Read(}"; path="${path%) }"; echo "- Never read files matching $path." ;;
