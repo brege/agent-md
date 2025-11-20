@@ -70,10 +70,12 @@ done < "$src_claude" > "$tmp_instr"
         # Base settings (security-sensitive paths)
         jq -r '.permissions.deny[]' "$src_settings" 2>/dev/null
 
-        # Modular settings files
-        jq -r '.permissions.deny[]' "$SCRIPT_DIR/shared/json/git.json" 2>/dev/null
-        jq -r '.permissions.deny[]' "$SCRIPT_DIR/shared/json/installers.json" 2>/dev/null
-        jq -r '.permissions.deny[]' "$SCRIPT_DIR/shared/json/paths.json" 2>/dev/null
+        # Modular settings files (all .json files in shared/json/)
+        for json_file in "$SCRIPT_DIR/shared/json"/*.json; do
+            if [[ -f "$json_file" ]]; then
+                jq -r '.permissions.deny[]' "$json_file" 2>/dev/null
+            fi
+        done
 
         # Local settings if they exist
         if [[ -f "./.claude/settings.local.json" ]]; then

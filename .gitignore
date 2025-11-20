@@ -1,1 +1,4 @@
-shared/json/
+shared/json/*
+!shared/json/git.json
+!shared/json/installers.json
+!shared/json/paths.json

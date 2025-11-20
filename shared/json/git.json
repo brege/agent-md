@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git add:*)",
+      "Bash(git am:*)",
+      "Bash(git apply:*)",
+      "Bash(git archive:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git cherry-pick:*)",
+      "Bash(git clean:*)",
+      "Bash(git commit:*)",
+      "Bash(git format-patch:*)",
+      "Bash(git gc:*)",
+      "Bash(git merge:*)",
+      "Bash(git mv:*)",
+      "Bash(git prune:*)",
+      "Bash(git pull:*)",
+      "Bash(git push:*)",
+      "Bash(git rebase:*)",
+      "Bash(git reflog:*)",
+      "Bash(git replace:*)",
+      "Bash(git request-pull:*)",
+      "Bash(git reset:*)",
+      "Bash(git restore:*)",
+      "Bash(git revert:*)",
+      "Bash(git rm:*)",
+      "Bash(git send-email:*)",
+      "Bash(git sparse-checkout:*)",
+      "Bash(git stash:*)",
+      "Bash(git submodule:*)",
+      "Bash(git switch:*)",
+      "Bash(git bundle:*)"
+    ]
+  }
+}

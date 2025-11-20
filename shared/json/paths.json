@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(~/.mozilla/**)",
+      "Read(~/.thunderbird/**)",
+      "Read(~/.var/app/**)",
+      "Edit(~/.mozilla/**)",
+      "Edit(~/.thunderbird/**)",
+      "Edit(~/.var/app/**)",
+      "Write(~/.mozilla/**)",
+      "Write(~/.thunderbird/**)",
+      "Write(~/.var/app/**)",
+      "Glob(~/.mozilla/**)",
+      "Glob(~/.thunderbird/**)",
+      "Glob(~/.var/app/**)"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(sudo:*)",
+      "Bash(pip install:*)",
+      "Bash(npm install:*)",
+      "Bash(apt install:*)",
+      "Bash(apt-get install:*)",
+      "Bash(pacman -S:*)",
+      "Bash(yum install:*)",
+      "Bash(dnf install:*)",
+      "Bash(dpkg -i:*)"
+    ]
+  }
+}
