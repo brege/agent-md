@@ -3,10 +3,11 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-src_template="$SCRIPT_DIR/shared/base-AGENTS.md"
-src_claude="$SCRIPT_DIR/shared/base-CLAUDE.md"
-src_settings="$SCRIPT_DIR/shared/base-settings.json"
+src_template="$REPO_DIR/prompts/AGENTS.md"
+src_claude="$REPO_DIR/prompts/CLAUDE.md"
+src_settings="$REPO_DIR/settings/settings.json"
 
 if [[ ! -f "$src_template" ]]; then
     echo "error: $src_template not found" >&2
@@ -34,7 +35,7 @@ trap "rm -f $tmp_local $tmp_instr $tmp_restr $tmp_out" EXIT
 if [[ -f "./.claude/CLAUDE.md" ]]; then
     while IFS= read -r line; do
         if [[ $line =~ ^@instructions/(.+)\.md$ ]]; then
-            include_file="$SCRIPT_DIR/instructions/${BASH_REMATCH[1]}.md"
+            include_file="$REPO_DIR/prompts/partials/instructions/${BASH_REMATCH[1]}.md"
             if [[ -f "$include_file" ]]; then
                 tail -n +2 "$include_file" | awk 'NF {p=1} p'
             else
@@ -49,7 +50,7 @@ fi
 # Expand @instructions/* references in base CLAUDE.md
 while IFS= read -r line; do
     if [[ $line =~ ^@instructions/(.+)\.md$ ]]; then
-        include_file="$SCRIPT_DIR/instructions/${BASH_REMATCH[1]}.md"
+        include_file="$REPO_DIR/prompts/partials/instructions/${BASH_REMATCH[1]}.md"
         if [[ -f "$include_file" ]]; then
             tail -n +2 "$include_file" | awk 'NF {p=1} p'
         else
@@ -70,8 +71,8 @@ done < "$src_claude" > "$tmp_instr"
         # Base settings (security-sensitive paths)
         jq -r '.permissions.deny[]' "$src_settings" 2>/dev/null
 
-        # Modular settings files (all .json files in shared/json/)
-        for json_file in "$SCRIPT_DIR/shared/json"/*.json; do
+        # Modular settings files (all .json files in settings/partials/)
+        for json_file in "$REPO_DIR/settings/partials"/*.json; do
             if [[ -f "$json_file" ]]; then
                 jq -r '.permissions.deny[]' "$json_file" 2>/dev/null
             fi

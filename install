@@ -52,7 +52,7 @@ esac
 installed=()
 
 for script in "${scripts[@]}"; do
-    src="$SCRIPT_DIR/$script"
+    src="$SCRIPT_DIR/bin/$script"
     dest="$TARGET_DIR/$script"
 
     if [[ ! -f "$src" ]]; then
