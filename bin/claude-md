@@ -10,34 +10,57 @@ mkdir -p "$CLAUDE_DIR"
 
 echo "Initializing global Claude Code configuration..."
 
-# Symlink directories for live updates
-for dir in instructions agents; do
-    src="$REPO_DIR/prompts/partials/$dir"
-    dest="$CLAUDE_DIR/$dir"
+# Remove old symlinks/directories and create fresh directories with merged content
+rm -rf "$CLAUDE_DIR/instructions" "$CLAUDE_DIR/agents"
+mkdir -p "$CLAUDE_DIR/instructions" "$CLAUDE_DIR/agents"
 
-    if [[ ! -L "$dest" ]] || [[ "$(readlink "$dest")" != "$src" ]]; then
-        rm -rf "$dest"
-        ln -s "$src" "$dest"
-        echo "linked: $dir"
-    fi
-done
+# Copy instruction files with local augmentation
+if [[ -d "$REPO_DIR/prompts/partials/instructions" ]]; then
+    while IFS= read -r src_file; do
+        filename=$(basename "$src_file")
+        dest_file="$CLAUDE_DIR/instructions/$filename"
+        local_file="$REPO_DIR/local/prompts/partials/instructions/$filename"
 
-# Copy config files only if changed
-for config in CLAUDE.md settings.json; do
-    case "$config" in
-        CLAUDE.md)
-            src="$REPO_DIR/prompts/$config"
-            ;;
-        settings.json)
-            src="$REPO_DIR/settings/$config"
-            ;;
-    esac
-    dest="$CLAUDE_DIR/$config"
+        {
+            cat "$src_file"
+            if [[ -f "$local_file" ]]; then
+                echo ""
+                cat "$local_file"
+            fi
+        } > "$dest_file"
+    done < <(find "$REPO_DIR/prompts/partials/instructions" -maxdepth 1 -type f -name "*.md")
+fi
 
-    if [[ ! -f "$dest" ]] || ! cmp -s "$src" "$dest"; then
-        cp "$src" "$dest"
-        echo "updated: $config"
-    fi
-done
+# Copy agent files with local augmentation
+if [[ -d "$REPO_DIR/prompts/partials/agents" ]]; then
+    while IFS= read -r src_file; do
+        filename=$(basename "$src_file")
+        dest_file="$CLAUDE_DIR/agents/$filename"
+        local_file="$REPO_DIR/local/prompts/partials/agents/$filename"
+
+        {
+            cat "$src_file"
+            if [[ -f "$local_file" ]]; then
+                echo ""
+                cat "$local_file"
+            fi
+        } > "$dest_file"
+    done < <(find "$REPO_DIR/prompts/partials/agents" -maxdepth 1 -type f -name "*.md")
+fi
+
+# Copy CLAUDE.md template
+src="$REPO_DIR/prompts/CLAUDE.md"
+dest="$CLAUDE_DIR/CLAUDE.md"
+if [[ ! -f "$dest" ]] || ! cmp -s "$src" "$dest"; then
+    cp "$src" "$dest"
+    echo "updated: CLAUDE.md"
+fi
+
+# Merge and copy settings.json
+dest="$CLAUDE_DIR/settings.json"
+{
+    jq -s 'add' "$REPO_DIR/settings/settings.json" "$REPO_DIR/settings/partials"/*.json 2>/dev/null || cat "$REPO_DIR/settings/settings.json"
+} > "$dest"
+echo "updated: settings.json"
 
 echo "Done. Global configuration initialized."
