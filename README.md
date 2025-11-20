@@ -6,16 +6,27 @@ Modeled after [motlin/claude-code-prompts](https://github.com/motlin/claude-code
 
 ## Installation
 
-- Claude: `./claude-md` - Symlinks instructions and agents, copies CLAUDE.md and settings.json
-- Codex: `./codex-md` - Generates monolithic AGENTS.md from modular sources
+```bash
+./install              # both to /usr/local/bin
+./install --claude     # only claude-md
+./install --codex      # only codex-md
+./install ~/bin        # some custom path in $PATH
+```
 
-## Codex AGENTS.md Generation
+| agent  | command    | description |
+|:-------|:-----------|:------------|
+| Claude | `claude-md`| Symlinks instructions and agents, copies CLAUDE.md and settings.json |
+| Codex  | `codex-md` | Generates monolithic AGENTS.md from modular sources |
 
-Codex requires a single monolithic `AGENTS.md`. The builder:
+## Configuration Builders
 
-1. Expands all `@instructions/*.md` references from `base-CLAUDE.md`
-2. Collects deny rules from `base-settings.json` and modular JSON files in `shared/json/` (git, installers, paths)
-3. Merges everything into `base-AGENTS.md` template, creating a complete agent configuration
+**claude-md:** Symlinks `instructions/` and `agents/`, copies `base-CLAUDE.md` and `base-settings.json` to `~/.claude`. Claude manages local customizations in `~/.claude/settings.json`.
+
+**codex-md:** Generates monolithic `AGENTS.md` by:
+1. Expanding `@instructions/*.md` references from `base-CLAUDE.md`
+2. Collecting deny rules from `base-settings.json` and all `.json` files in `shared/json/`
+3. Merging local `.claude/settings.local.json` if present
+4. Creating complete agent configuration
 
 ## Documentation
 

@@ -2,14 +2,53 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-TARGET_DIR="${1:-/usr/local/bin}"
+TARGET_DIR="/usr/local/bin"
+INSTALL_TYPE="all"
+
+# Parse arguments
+for arg in "$@"; do
+    case "$arg" in
+        --claude)
+            INSTALL_TYPE="claude"
+            ;;
+        --codex)
+            INSTALL_TYPE="codex"
+            ;;
+        --all)
+            INSTALL_TYPE="all"
+            ;;
+        /*)
+            TARGET_DIR="$arg"
+            ;;
+        *)
+            echo "usage: $0 [--claude|--codex|--all] [target-dir]" >&2
+            echo "  --claude    install only claude-md" >&2
+            echo "  --codex     install only codex-md" >&2
+            echo "  --all       install both (default)" >&2
+            echo "  target-dir  installation directory (default: /usr/local/bin)" >&2
+            exit 1
+            ;;
+    esac
+done
 
 if [[ ! -d "$TARGET_DIR" ]]; then
     echo "error: destination $TARGET_DIR does not exist" >&2
     exit 1
 fi
 
-scripts=("claude-md" "codex-md")
+# Determine which scripts to install
+scripts=()
+case "$INSTALL_TYPE" in
+    claude)
+        scripts=("claude-md")
+        ;;
+    codex)
+        scripts=("codex-md")
+        ;;
+    all)
+        scripts=("claude-md" "codex-md")
+        ;;
+esac
 installed=()
 
 for script in "${scripts[@]}"; do
