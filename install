@@ -1,0 +1,49 @@
+#!/bin/bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+TARGET_DIR="${1:-/usr/local/bin}"
+
+if [[ ! -d "$TARGET_DIR" ]]; then
+    echo "error: destination $TARGET_DIR does not exist" >&2
+    exit 1
+fi
+
+scripts=("claude-md" "codex-md")
+installed=()
+
+for script in "${scripts[@]}"; do
+    src="$SCRIPT_DIR/$script"
+    dest="$TARGET_DIR/$script"
+
+    if [[ ! -f "$src" ]]; then
+        echo "error: source script not found: $src" >&2
+        exit 1
+    fi
+
+    # Check if symlink is correct
+    if [[ ! -L "$dest" ]] || [[ "$(readlink "$dest")" != "$src" ]]; then
+        rm -f "$dest"
+        ln -s "$src" "$dest"
+        echo "[+] Installed: $script"
+        installed+=("$script")
+    else
+        echo "[-] Already linked: $script"
+    fi
+done
+
+# Check if in PATH
+if [[ ":$PATH:" != *":$TARGET_DIR:"* ]]; then
+    echo ""
+    echo "warning: $TARGET_DIR is not in your PATH"
+    echo "add this to your shell config:"
+    echo "    export PATH=\"$TARGET_DIR:\$PATH\""
+else
+    echo ""
+    echo "✓ $TARGET_DIR is in PATH"
+fi
+
+if [[ ${#installed[@]} -gt 0 ]]; then
+    echo ""
+    echo "installed: ${installed[*]}"
+fi

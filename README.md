@@ -1,13 +1,13 @@
 # Agent Configs
 
-Configuration templates and instructions for Claude Code and Codex agents.
+Configuration templates and instructions for Claude Code and Codex.
 
-Modeled after [motlin/claude-code-prompts](https://github.com/motlin/claude-code-prompts) with custom rules and agent definitions.
+Modeled after [motlin/claude-code-prompts](https://github.com/motlin/claude-code-prompts) but not as advanced, but also creates an AGENTS.md for Codex.
 
 ## Installation
 
-- Claude: `./claude-init` - Symlinks instructions and agents, copies CLAUDE.md and settings.json
-- Codex: `./codex-init` - Generates monolithic AGENTS.md from modular sources
+- Claude: `./claude-md` - Symlinks instructions and agents, copies CLAUDE.md and settings.json
+- Codex: `./codex-md` - Generates monolithic AGENTS.md from modular sources
 
 ## Codex AGENTS.md Generation
 
