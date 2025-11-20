@@ -61,5 +61,5 @@ If a local `CLAUDE.local.md` (or `.claude/settings.local.json`) file is in the p
 
 ## License
 
-[CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
-
+Prompts: [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+Scripts: [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.html)
