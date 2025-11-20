@@ -13,30 +13,37 @@ Modeled after [motlin/claude-code-prompts](https://github.com/motlin/claude-code
 ./install ~/bin        # some custom path in $PATH
 ```
 
-| agent  | command    | description |
-|:-------|:-----------|:------------|
-| Claude | `claude-md`| Symlinks instructions and agents, copies CLAUDE.md and settings.json |
-| Codex  | `codex-md` | Generates monolithic AGENTS.md from modular sources |
+| agent  | command     | description |
+|:-------|:------------|:------------|
+| Claude | `claude-md` | Symlinks instructions and agents, copies CLAUDE.md and settings.json |
+| Codex  | `codex-md`  | Generates monolithic AGENTS.md from modular sources |
 
 ## Configuration Builders
 
-**claude-md:** Symlinks `instructions/` and `agents/`, copies `base-CLAUDE.md` and `base-settings.json` to `~/.claude`. Claude manages local customizations in `~/.claude/settings.json`.
+**claude-md**
 
-**codex-md:** Generates monolithic `AGENTS.md` by:
-1. Expanding `@instructions/*.md` references from `base-CLAUDE.md`
-2. Collecting deny rules from `base-settings.json` and all `.json` files in `shared/json/`
-3. Merging local `.claude/settings.local.json` if present
-4. Creating complete agent configuration
+- symlinks `instructions/` and `agents/` to local `~/.claude`
+- copies `base-CLAUDE.md` to `~/.claude/CLAUDE.md`
+- merges `shared/json/*.json` and `base-settings.json` into `~/.claude/settings.json`
 
-## Documentation
+reference: [CLAUDE.md documentation](https://code.claude.com/docs)
 
-- [Claude CLAUDE.md](https://code.claude.com/docs)
-- [Codex AGENTS.md](https://developers.openai.com/codex/guides/agents-md)
+**codex-md:** - monolithic `AGENTS.md`
 
-## Structure
+1. injects `@instructions/*.md` into `base-CLAUDE.md`, then writes `./AGENTS.md` in current directory
 
-- `shared/` - Base configuration templates
-  - `json/` - Modular settings for Codex builder (permissions, paths, installers)
-- `instructions/` - Instruction files for rules and practices
-- `agents/` - Custom agent definitions
-- `ref/` - Reference implementations
+2. merges
+
+   - `base-settings.json`
+   - `shared/json/*.json`
+   - `./.claude/settings.json`  
+
+   then injects into `AGENTS.md`
+
+reference: [Codex AGENTS.md documentation](https://developers.openai.com/codex/guides/agents-md)
+
+
+## License
+
+[CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
