@@ -1,4 +1,5 @@
-shared/json/*
-!shared/json/git.json
-!shared/json/installers.json
-!shared/json/paths.json
+local/
+settings/partials/*
+!settings/partials/git.json
+!settings/partials/installers.json
+!settings/partials/paths.json
