@@ -59,7 +59,14 @@ fi
 # Merge and copy settings.json
 dest="$CLAUDE_DIR/settings.json"
 {
-    jq -s 'add' "$REPO_DIR/settings/settings.json" "$REPO_DIR/settings/partials"/*.json 2>/dev/null || cat "$REPO_DIR/settings/settings.json"
+    jq -s '.[0] as $base | {
+      includeCoAuthoredBy: $base.includeCoAuthoredBy,
+      permissions: {
+        deny: ([.[].permissions.deny // []] | add)
+      },
+      model: $base.model,
+      alwaysThinkingEnabled: $base.alwaysThinkingEnabled
+    }' "$REPO_DIR/settings/settings.json" "$REPO_DIR/settings/partials"/*.json "$REPO_DIR/local/settings/partials"/*.json 2>/dev/null || cat "$REPO_DIR/settings/settings.json"
 } > "$dest"
 echo "updated: settings.json"
 

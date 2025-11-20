@@ -1,5 +1,1 @@
 local/
-settings/partials/*
-!settings/partials/git.json
-!settings/partials/installers.json
-!settings/partials/paths.json

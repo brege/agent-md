@@ -83,7 +83,14 @@ done < "$src_claude" > "$tmp_instr"
             fi
         done
 
-        # Local settings if they exist
+        # Local augmentation settings (all .json files in local/settings/partials/)
+        for json_file in "$REPO_DIR/local/settings/partials"/*.json; do
+            if [[ -f "$json_file" ]]; then
+                jq -r '.permissions.deny[]' "$json_file" 2>/dev/null
+            fi
+        done
+
+        # Project-local runtime settings if they exist
         if [[ -f "./.claude/settings.local.json" ]]; then
             jq -r '.permissions.deny[]' "./.claude/settings.local.json" 2>/dev/null
         fi
