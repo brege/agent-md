@@ -1,5 +1,5 @@
-Agent Configs
-=============
+agent-md - Claude + Codex Manager
+=================================
 
 Configuration templates and instructions for Claude Code and Codex.
 
@@ -36,18 +36,18 @@ This tool is for those who use both Claude and Codex.
 **claude-md**
 '''''''''''''
 
-Claude can be configured globally through a central ``CLAUDE.md`` file, and informed locally by an overriding ``CLAUDE.md`` file, or more commonly a project-specific ``CLAUDE.local.md`` file. Similarly, a local project specific ``.claude/settings.local.json`` can also be set.
+Claude can be configured globally through a central ``CLAUDE.md`` file, and informed locally by an overriding project ``CLAUDE.md`` file, or more commonly a user-specific project ``CLAUDE.local.md`` file. Similarly, a local project specific ``.claude/settings.local.json`` can also be set and is usually managed by Claude. **These *.md are not adjust byt this tool.**
 
-This tool does not touch ``CLAUDE.local.md`` files. What it does is provide the global ``CLAUDE.md`` file from a collection of partials.
+This tool provides a builder for the global ``CLAUDE.md`` file through a collection of partials.
 
-- copies ``prompts/partials/instructions/`` to ``~/.claude/``
+- copies ``prompts/partials/instructions/`` to ``~/.claude/instructions/``
 - copies ``prompts/CLAUDE.md`` to ``~/.claude/CLAUDE.md`` with @partials intact
 - merges 
   
   - ``settings/settings.json``
   - ``settings/partials/*.json`` 
 
-  → ``~/.claude/settings.json``
+  into ``~/.claude/settings.json``
 
 We leave local ``.claude/settings.local.json`` and ``CLAUDE.local.md`` untouched.
 
@@ -70,8 +70,8 @@ Codex uses a local, monolithic ``AGENTS.md`` file for each project. In addition,
 
 - expand ``@instructions/*.md`` from:
 
-  - ``prompts/partials/``
-  - ``user/prompts/partials/``
+  - ``prompts/partials/instructions/``
+  - ``user/prompts/partials/instructions/``
 
   and writes ``./AGENTS.md``.
 
@@ -84,6 +84,11 @@ Codex uses a local, monolithic ``AGENTS.md`` file for each project. In addition,
   then injects into ``./AGENTS.md``.
 
 If a local ``CLAUDE.local.md`` (or ``.claude/settings.local.json``) file is in the project root, **codex-md** will use them to build the full AGENTS.md file.
+
+.. code-block:: bash
+    
+   ./install --codex
+   codex-md
 
 *reference:* `Codex AGENTS.md documentation`_
 

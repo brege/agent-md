@@ -1,4 +1,4 @@
-User Configurations
+agent-md - User Configurations
 ===================
 
 User-defined customizations, extensions, and project-specific configurations.
@@ -16,7 +16,8 @@ Structure
    ├── settings/
    │   └── partials/           custom settings partials
    └── src/
-       └── path/from/root/     stashed project configs
+       ├── path/from/home/     stashed project configs
+       └── _/path/from/root/   stashed project configs
 
 Usage
 -----
@@ -42,10 +43,10 @@ Usage
       stash-md CLAUDE.local.md
       stash-md AGENTS.override.md
 
-   This creates symlinks in ``src/code/`` following the pattern:
+   This creates symlinks preserving the full directory structure:
 
-   - ``src/code/{project}.CLAUDE.local.md`` → ``/path/to/project/CLAUDE.local.md``
-   - ``src/code/{project}.AGENTS.override.md`` → ``/path/to/project/AGENTS.override.md``
+   - Home paths: ``src/path/to/your/project/CLAUDE.local.md``
+   - Root paths: ``src/_/path/to/your/project/AGENTS.override.md``
 
 Repository
 ----------
