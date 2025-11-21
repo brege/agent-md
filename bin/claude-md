@@ -15,42 +15,42 @@ echo "Initializing global Claude Code configuration..."
 rm -rf "$CLAUDE_DIR/instructions" "$CLAUDE_DIR/agents"
 mkdir -p "$CLAUDE_DIR/instructions" "$CLAUDE_DIR/agents"
 
-# Copy instruction files with local augmentation
+# Copy instruction files with user augmentation
 if [[ -d "$REPO_DIR/prompts/partials/instructions" ]]; then
     while IFS= read -r src_file; do
         filename=$(basename "$src_file")
         dest_file="$CLAUDE_DIR/instructions/$filename"
-        local_file="$REPO_DIR/local/prompts/partials/instructions/$filename"
+        user_file="$REPO_DIR/user/prompts/partials/instructions/$filename"
 
-        if [[ -f "$local_file" ]] && head -1 "$local_file" | grep -q "^@override"; then
-            tail -n +2 "$local_file" > "$dest_file"
+        if [[ -f "$user_file" ]] && head -1 "$user_file" | grep -q "^@override"; then
+            tail -n +2 "$user_file" > "$dest_file"
         else
             {
                 cat "$src_file"
-                if [[ -f "$local_file" ]]; then
+                if [[ -f "$user_file" ]]; then
                     echo ""
-                    cat "$local_file"
+                    cat "$user_file"
                 fi
             } > "$dest_file"
         fi
     done < <(find "$REPO_DIR/prompts/partials/instructions" -maxdepth 1 -type f -name "*.md")
 fi
 
-# Copy agent files with local augmentation
+# Copy agent files with user augmentation
 if [[ -d "$REPO_DIR/prompts/partials/agents" ]]; then
     while IFS= read -r src_file; do
         filename=$(basename "$src_file")
         dest_file="$CLAUDE_DIR/agents/$filename"
-        local_file="$REPO_DIR/local/prompts/partials/agents/$filename"
+        user_file="$REPO_DIR/user/prompts/partials/agents/$filename"
 
-        if [[ -f "$local_file" ]] && head -1 "$local_file" | grep -q "^@override"; then
-            tail -n +2 "$local_file" > "$dest_file"
+        if [[ -f "$user_file" ]] && head -1 "$user_file" | grep -q "^@override"; then
+            tail -n +2 "$user_file" > "$dest_file"
         else
             {
                 cat "$src_file"
-                if [[ -f "$local_file" ]]; then
+                if [[ -f "$user_file" ]]; then
                     echo ""
-                    cat "$local_file"
+                    cat "$user_file"
                 fi
             } > "$dest_file"
         fi
@@ -75,7 +75,7 @@ dest="$CLAUDE_DIR/settings.json"
       },
       model: $base.model,
       alwaysThinkingEnabled: $base.alwaysThinkingEnabled
-    }' "$REPO_DIR/settings/settings.json" "$REPO_DIR/settings/partials"/*.json "$REPO_DIR/local/settings/partials"/*.json 2>/dev/null || cat "$REPO_DIR/settings/settings.json"
+    }' "$REPO_DIR/settings/settings.json" "$REPO_DIR/settings/partials"/*.json "$REPO_DIR/user/settings/partials"/*.json 2>/dev/null || cat "$REPO_DIR/settings/settings.json"
 } > "$dest"
 echo "updated: settings.json"
 

@@ -9,7 +9,7 @@ filename="$1"
 source_file="$PWD/$filename"
 project_name=$(basename "$PWD")
 agent_configs_dir="$HOME/code/agent-configs"
-dest_dir="$agent_configs_dir/local/src/code"
+dest_dir="$agent_configs_dir/user/src/code"
 dest_file="$dest_dir/${project_name}.${filename}"
 
 if [ ! -f "$source_file" ]; then

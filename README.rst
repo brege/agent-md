@@ -71,7 +71,7 @@ Codex uses a local, monolithic ``AGENTS.md`` file for each project. In addition,
 - expand ``@instructions/*.md`` from:
 
   - ``prompts/partials/``
-  - ``local/prompts/partials/``
+  - ``user/prompts/partials/``
 
   and writes ``./AGENTS.md``.
 

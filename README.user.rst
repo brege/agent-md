@@ -1,5 +1,5 @@
-Local Configurations
-====================
+User Configurations
+===================
 
 User-defined customizations, extensions, and project-specific configurations.
 
@@ -8,8 +8,8 @@ Structure
 
 .. code-block:: text
 
-   local/
-   ├── README.rst              symlink to ../README.local.rst
+   user/
+   ├── README.rst              symlink to ../README.user.rst
    ├── prompts/
    │   └── partials/
    │       └── instructions/   custom instruction partials
@@ -28,7 +28,7 @@ Usage
 
    .. code-block:: bash
 
-      local/prompts/partials/instructions/file-restrictions.md
+      user/prompts/partials/instructions/file-restrictions.md
       @override
       # File Access Restrictions
       (replacement content)
@@ -54,5 +54,4 @@ Initialize this directory as your own git repository to track your customization
 
 .. code-block:: bash
 
-   cd local/
-   git init
+   cd user/ && git init
