@@ -22,13 +22,17 @@ if [[ -d "$REPO_DIR/prompts/partials/instructions" ]]; then
         dest_file="$CLAUDE_DIR/instructions/$filename"
         local_file="$REPO_DIR/local/prompts/partials/instructions/$filename"
 
-        {
-            cat "$src_file"
-            if [[ -f "$local_file" ]]; then
-                echo ""
-                cat "$local_file"
-            fi
-        } > "$dest_file"
+        if [[ -f "$local_file" ]] && head -1 "$local_file" | grep -q "^@override"; then
+            tail -n +2 "$local_file" > "$dest_file"
+        else
+            {
+                cat "$src_file"
+                if [[ -f "$local_file" ]]; then
+                    echo ""
+                    cat "$local_file"
+                fi
+            } > "$dest_file"
+        fi
     done < <(find "$REPO_DIR/prompts/partials/instructions" -maxdepth 1 -type f -name "*.md")
 fi
 
@@ -39,13 +43,17 @@ if [[ -d "$REPO_DIR/prompts/partials/agents" ]]; then
         dest_file="$CLAUDE_DIR/agents/$filename"
         local_file="$REPO_DIR/local/prompts/partials/agents/$filename"
 
-        {
-            cat "$src_file"
-            if [[ -f "$local_file" ]]; then
-                echo ""
-                cat "$local_file"
-            fi
-        } > "$dest_file"
+        if [[ -f "$local_file" ]] && head -1 "$local_file" | grep -q "^@override"; then
+            tail -n +2 "$local_file" > "$dest_file"
+        else
+            {
+                cat "$src_file"
+                if [[ -f "$local_file" ]]; then
+                    echo ""
+                    cat "$local_file"
+                fi
+            } > "$dest_file"
+        fi
     done < <(find "$REPO_DIR/prompts/partials/agents" -maxdepth 1 -type f -name "*.md")
 fi
 

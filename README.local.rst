@@ -21,10 +21,10 @@ Structure
 Usage
 -----
 
-**Extend prompts and settings:**
+**Extend prompts and settings**
    Place custom partials in ``prompts/partials/instructions/`` and ``settings/partials/`` following the same structure as the base project. The build tools will automatically merge them.
 
-**Track project configurations:**
+**Track project configurations**
    Use ``stash-md`` to symlink project-specific files:
 
    .. code-block:: bash
