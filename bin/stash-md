@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+    echo "Usage: stash-md <filename>"
+    exit 1
+fi
+
+filename="$1"
+source_file="$PWD/$filename"
+project_name=$(basename "$PWD")
+agent_configs_dir="$HOME/code/agent-configs"
+dest_dir="$agent_configs_dir/local/src/code"
+dest_file="$dest_dir/${project_name}.${filename}"
+
+if [ ! -f "$source_file" ]; then
+    echo "Error: $source_file not found"
+    exit 1
+fi
+
+mkdir -p "$dest_dir"
+
+if [ -e "$dest_file" ]; then
+    echo "Error: $dest_file already exists"
+    exit 1
+fi
+
+ln -s "$source_file" "$dest_file"
+echo "Linked: $source_file → $dest_file"
