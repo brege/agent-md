@@ -1,19 +1,17 @@
-name: Test Override Mode
+name: Unit Tests
 
 on:
   push:
     branches: [main]
     paths:
-      - 'bin/claude-md'
-      - 'bin/codex-md'
-      - 'test/test-override-simple.sh'
+      - 'bin/**'
+      - 'test/**'
       - '.github/workflows/test-override.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'bin/claude-md'
-      - 'bin/codex-md'
-      - 'test/test-override-simple.sh'
+      - 'bin/**'
+      - 'test/**'
       - '.github/workflows/test-override.yml'
   workflow_dispatch:
 
@@ -23,7 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run override mode tests
+      - name: Run all tests
         run: |
-          chmod +x test/test-override-simple.sh
-          test/test-override-simple.sh
+          chmod +x test/*.sh
+          for test_script in test/*.sh; do
+            echo "Running $test_script..."
+            "$test_script" || exit 1
+          done
