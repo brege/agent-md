@@ -10,21 +10,6 @@ src_template="$REPO_DIR/prompts/AGENTS.md"
 src_claude="$REPO_DIR/prompts/CLAUDE.md"
 src_settings="$REPO_DIR/settings/settings.json"
 
-if [[ ! -f "$src_template" ]]; then
-    echo "error: $src_template not found" >&2
-    exit 1
-fi
-
-if [[ ! -f "$src_claude" ]]; then
-    echo "error: $src_claude not found" >&2
-    exit 1
-fi
-
-if [[ ! -f "$src_settings" ]]; then
-    echo "error: $src_settings not found" >&2
-    exit 1
-fi
-
 # Create temp files
 tmp_local=$(mktemp)
 tmp_instr=$(mktemp)

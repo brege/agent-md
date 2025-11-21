@@ -12,18 +12,12 @@ REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 filename="$1"
 source_file="$PWD/$filename"
-
-# Use environment variable if set, otherwise use the agent-md repo
-# where the script is installed
 agent_configs_dir="${AGENT_CONFIGS_DIR:-$REPO_DIR}"
 
-# Build destination directory with context prefix
 if [[ "$PWD" == "$HOME"* ]]; then
-    # Home-relative path
     rel_path="${PWD#$HOME/}"
     dest_dir="$agent_configs_dir/user/src/$rel_path"
 else
-    # Root-relative path: use _ prefix for absolute paths
     rel_path="${PWD#/}"
     dest_dir="$agent_configs_dir/user/src/_/$rel_path"
 fi
