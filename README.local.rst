@@ -22,7 +22,16 @@ Usage
 -----
 
 **Extend prompts and settings**
-   Place custom partials in ``prompts/partials/instructions/`` and ``settings/partials/`` following the same structure as the base project. The build tools will automatically merge them.
+   Place custom partials in ``prompts/partials/instructions/`` and ``settings/partials/`` following the same structure as the base project. The build tools will automatically append them to the base versions.
+
+   To completely replace a base partial instead of appending, start your file with ``@override`` on the first line:
+
+   .. code-block:: bash
+
+      local/prompts/partials/instructions/file-restrictions.md
+      @override
+      # File Access Restrictions
+      (replacement content)
 
 **Track project configurations**
    Use ``stash-md`` to symlink project-specific files:
