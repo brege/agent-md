@@ -3,8 +3,9 @@
 ## File Operations
 
 - Prefer editing an existing file to creating a new one
-- Never create documentation files (*.md or README) unless explicitly requested
+- Never create or proactively edit documentation files (*.md or README) unless explicitly requested
 - Only create files when absolutely necessary for achieving the goal
+- If code changes contradict existing documentation, propose updates to keep docs in sync rather than silently leaving inconsistencies
 
 ## Comments and Code
 

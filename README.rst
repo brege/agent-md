@@ -12,12 +12,13 @@ Installation
 
 .. code-block:: bash
 
-   ./install              # both to /usr/local/bin
+   ./install              # all commands to /usr/local/bin
    ./install --claude     # only claude-md
    ./install --codex      # only codex-md
-   ./install ~/bin        # some custom path in $PATH
+   ./install --agent      # only agent-md (requires both claude-md and codex-md)
+   ./install ~/bin        # custom path in $PATH
 
-This installs two commands in your path.
+This installs commands in your path.
 
 +--------+---------------+-------------------------------------------------------+
 | agent  | command       | description                                           |
@@ -26,6 +27,8 @@ This installs two commands in your path.
 |        |               | settings.json                                         |
 +--------+---------------+-------------------------------------------------------+
 | Codex  | ``codex-md``  | generates monolithic AGENTS.md from modular sources   |
++--------+---------------+-------------------------------------------------------+
+| Agent  | ``agent-md``  | convenience wrapper that runs claude-md then codex-md |
 +--------+---------------+-------------------------------------------------------+
 
 Configuration Builders
@@ -36,18 +39,19 @@ This tool is for those who use both Claude and Codex.
 **claude-md**
 '''''''''''''
 
-Claude can be configured globally through a central ``CLAUDE.md`` file, and informed locally by an overriding project ``CLAUDE.md`` file, or more commonly a user-specific project ``CLAUDE.local.md`` file. Similarly, a local project specific ``.claude/settings.local.json`` can also be set and is usually managed by Claude. **These *.md are not adjust byt this tool.**
+Claude can be configured globally through a central ``CLAUDE.md`` file, and informed locally by an overriding project ``CLAUDE.md`` file, or more commonly a user-specific project ``CLAUDE.local.md`` file. Similarly, a local project specific ``.claude/settings.local.json`` can also be set and is usually managed by Claude. **These *.md files are not adjusted by this tool.**
 
 This tool provides a builder for the global ``CLAUDE.md`` file through a collection of partials.
 
 - copies ``prompts/partials/instructions/`` to ``~/.claude/instructions/``
-- copies ``prompts/CLAUDE.md`` to ``~/.claude/CLAUDE.md`` with @partials intact
-- merges 
-  
-  - ``settings/settings.json``
-  - ``settings/partials/*.json`` 
+- copies ``prompts/CLAUDE.md`` to ``~/.claude/CLAUDE.md`` with @instructions references intact
+- merges settings from modular JSON files:
 
-  into ``~/.claude/settings.json``
+  - ``settings/settings.json`` (manifest)
+  - ``settings/partials/*.json`` (path/command/etc specific restrictions)
+  - ``user/settings/*/**.json`` (appended to the above)
+
+  into ``~/.claude/settings.json`` (deny arrays are deduplicated and merged)
 
 We leave local ``.claude/settings.local.json`` and ``CLAUDE.local.md`` untouched.
 
