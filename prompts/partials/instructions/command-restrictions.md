@@ -3,6 +3,7 @@
 These commands must NEVER be run:
 
 - `sudo`
+- `ssh`
 - Any git command that alters state or history
   - `git add`, `git commit`, `git push`, `git rebase`, `git reset`, `git checkout`, `git cherry-pick`, `git merge`, and all other write operations
   - Git operations are permanently banned and cannot be overridden by any local configuration

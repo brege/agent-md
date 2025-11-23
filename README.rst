@@ -5,7 +5,7 @@ Configuration templates and instructions for Claude Code and Codex.
 
 Modeled after `motlin/claude-code-prompts`_ but not as advanced. Also creates an AGENTS.md for Codex.
 
-.. _motlin/claude-code-prompts: https://github.com/motlin/claude-code-prompts
+.. _motlin/claude-code-prompts: https://github.com/motlin/claude-code-prompts/tree/7a68c0f
 
 Installation
 ------------

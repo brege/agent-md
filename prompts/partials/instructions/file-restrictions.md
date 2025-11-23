@@ -2,14 +2,24 @@
 
 Never access personal data directories like SSH keys, credentials, browser profiles, or sensitive user directories. Specific prohibited paths are configured in settings.
 
-Safe for code and configuration work:
-- Project root and subdirectories
-- Standard system directories: /opt, /var/www, /usr/local, /etc
+## Safe for code and configuration work
+
+Project root and subdirectories, as well as:
+
+- /tmp/
 - Code/script directories with explicit user permission
+- XDG config directories
+- Extensions: .yaml, .yml, .json, .toml, .conf, .ini
 
-Editable configuration files:
-- ./config.yaml (and other formats: .yml, .json, .toml, .conf, etc.)
-- ~/.config/PROJECT/config.* (where PROJECT is the project name)
-- /var/lib/PROJECT/config.*
+@instructions/file-restrictions-allow.md
 
-When default config keys or order change, offer to update user's local config files.
+## Prohibited Directories
+
+Never access the following directories:
+
+- ~/.ssh/
+- ~/.gnupg/
+- ~/.var/app/
+
+@instructions/file-restrictions-deny.md
+

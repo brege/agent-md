@@ -13,16 +13,17 @@ Your role is to scan code and documentation for emoji/symbols and remove those t
 
 These emoji are approved for use and should always be kept:
 - ✔ (check mark)
+- ✓ (check mark)
 - × (multiplication sign)
 - ● (filled circle)
 - ○ (empty circle)
+- · (availability)
 - ✖ (heavy ballot X)
 - ★ (star)
 - ➜ (arrow)
 - ↔ (left-right arrow)
 - ⚠ (warning)
 - ℹ (info)
-
 ## Content to Preserve
 
 - User-written em-dashes: `--` (double hyphens) should always be preserved
