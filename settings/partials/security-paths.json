@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(~/.ssh/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.var/app/**)",
+      "Edit(~/.ssh/**)",
+      "Edit(~/.gnupg/**)",
+      "Edit(~/.var/app/**)",
+      "Write(~/.ssh/**)",
+      "Write(~/.gnupg/**)",
+      "Write(~/.var/app/**)",
+      "Glob(~/.ssh/**)",
+      "Glob(~/.gnupg/**)",
+      "Glob(~/.var/app/**)"
+    ]
+  }
+}
