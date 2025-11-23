@@ -49,8 +49,28 @@ case "$INSTALL_TYPE" in
         ;;
     all)
         while IFS= read -r -d '' script; do
-            scripts+=("$(basename "$script")")
+            script_name="$(basename "$script")"
+            if [[ "$script_name" != "agent-md" ]]; then
+                scripts+=("$script_name")
+            fi
         done < <(find "$SCRIPT_DIR/bin" -maxdepth 1 -type f -print0)
+
+        # Check if both claude-md and codex-md are present or will be installed
+        has_claude=false
+        has_codex=false
+        for s in "${scripts[@]}"; do
+            [[ "$s" == "claude-md" ]] && has_claude=true
+            [[ "$s" == "codex-md" ]] && has_codex=true
+        done
+
+        # Also check if already installed in target
+        [[ -L "$TARGET_DIR/claude-md" ]] && has_claude=true
+        [[ -L "$TARGET_DIR/codex-md" ]] && has_codex=true
+
+        # Only include agent-md if both dependencies are present or being installed
+        if [[ "$has_claude" == true ]] && [[ "$has_codex" == true ]]; then
+            scripts+=("agent-md")
+        fi
         ;;
 esac
 installed=()

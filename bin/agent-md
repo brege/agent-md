@@ -1,0 +1,3 @@
+#!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)" && "$SCRIPT_DIR/claude-md" && "$SCRIPT_DIR/codex-md"
