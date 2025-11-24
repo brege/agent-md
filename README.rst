@@ -47,16 +47,21 @@ This tool provides a builder for the global ``CLAUDE.md`` file through a collect
 - copies ``prompts/CLAUDE.md`` to ``~/.claude/CLAUDE.md`` with @instructions references intact
 - merges settings from modular JSON files:
 
-  - ``settings/settings.json`` (manifest)
-  - ``settings/partials/*.json`` (path/command/etc specific restrictions)
-  - ``user/settings/*/**.json`` (appended to the above)
+  - ``settings/settings.json``
+  - ``settings/partials/*.json`` (security-paths, git, installers, system-paths)
+  - ``user/settings/partials/*.json``
 
-  into ``~/.claude/settings.json`` (deny arrays are deduplicated and merged)
+  into ``~/.claude/settings.json``
 
 We leave local ``.claude/settings.local.json`` and ``CLAUDE.local.md`` untouched.
 
+User Override Mode
+~~~~~~~~~~~~~~~~~~~
+
+To use only custom settings without merging distribution defaults, set ``"override": true`` in ``user/settings/settings.json``. The override key is removed before writing to ``~/.claude/settings.json``.
+
 .. code-block:: bash
-    
+
    ./install --claude
    claude-md
 
@@ -67,8 +72,7 @@ We leave local ``.claude/settings.local.json`` and ``CLAUDE.local.md`` untouched
 **codex-md**
 ''''''''''''
 
-Codex uses a local, monolithic ``AGENTS.md`` file for each project. In addition, Codex supports an 
-``AGENTS.override.md``. We do not "merge" this. Codex will delta the configs by itself. 
+Codex uses a local monolithic ``AGENTS.md`` file for each project. Codex supports ``AGENTS.override.md`` which it diffs directly—we do not merge this.
 
 **codex-md** will
 
@@ -77,17 +81,23 @@ Codex uses a local, monolithic ``AGENTS.md`` file for each project. In addition,
   - ``prompts/partials/instructions/``
   - ``user/prompts/partials/instructions/``
 
-  and writes ``./AGENTS.md``.
+  then write ``./AGENTS.md``
 
-- merge:
+- merge deny arrays from:
 
   - ``settings/settings.json``
   - ``settings/partials/*.json``
-  - **project-local** ``./.claude/settings.json``
+  - ``user/settings/partials/*.json``
+  - ``./.claude/settings.json`` (project-local, if exists)
 
-  then injects into ``./AGENTS.md``.
+  then inject into ``./AGENTS.md``
 
-If a local ``CLAUDE.local.md`` (or ``.claude/settings.local.json``) file is in the project root, **codex-md** will use them to build the full AGENTS.md file.
+If a local ``CLAUDE.local.md`` or ``./.claude/settings.json`` exists in the project root, **codex-md** uses them to build the full AGENTS.md file.
+
+**stash-md**
+''''''''''''
+
+Utility to link local markdown files into ``user/src/`` for project-specific configuration tracking.
 
 .. code-block:: bash
     

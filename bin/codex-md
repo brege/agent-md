@@ -17,8 +17,8 @@ tmp_restr=$(mktemp)
 tmp_out=$(mktemp)
 trap "rm -f $tmp_local $tmp_instr $tmp_restr $tmp_out" EXIT
 
-# Process local CLAUDE.md if it exists
-if [[ -f "./.claude/CLAUDE.md" ]]; then
+# Process local CLAUDE.local.md if it exists
+if [[ -f "./CLAUDE.local.md" ]]; then
     while IFS= read -r line; do
         if [[ $line =~ ^@instructions/(.+)\.md$ ]]; then
             include_file="$REPO_DIR/prompts/partials/instructions/${BASH_REMATCH[1]}.md"
@@ -30,7 +30,7 @@ if [[ -f "./.claude/CLAUDE.md" ]]; then
         else
             echo "$line"
         fi
-    done < "./.claude/CLAUDE.md" > "$tmp_local"
+    done < "./CLAUDE.local.md" > "$tmp_local"
 fi
 
 # Expand @instructions/* references in base CLAUDE.md
