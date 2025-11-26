@@ -1,6 +1,6 @@
 # Code Style
 
-## Strictness
+### Strictness
 
 - Don't write forgiving code
   - Don't permit multiple input formats
@@ -11,14 +11,14 @@
   - Don't add defensive try/catch blocks
     - Usually let exceptions propagate
 
-## Naming
+### Naming
 
 - Don't use abbreviations or acronyms
   - Choose `number` instead of `num`
   - Choose `greaterThan` instead of `gt`
   - Choose complete words in variable and function names
 
-## Comments
+### Comments
 
 - Comments are allowed but should be minimal
 - Don't comment out code - remove it instead

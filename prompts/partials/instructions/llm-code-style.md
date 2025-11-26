@@ -1,13 +1,13 @@
 # LLM Code Style
 
-## File Operations
+### File Operations
 
 - Prefer editing an existing file to creating a new one
 - Never create or proactively edit documentation files (*.md or README) unless explicitly requested
 - Only create files when absolutely necessary for achieving the goal
 - If code changes contradict existing documentation, propose updates to keep docs in sync rather than silently leaving inconsistencies
 
-## Comments and Code
+### Comments and Code
 
 - Use comments sparingly
 - Don't comment out code - remove it instead
@@ -19,7 +19,7 @@
 - Avoid end-of-line comments - place comments above the code they describe
 - Remove debugging comments before finishing
 
-## Backward Compatibility
+### Backward Compatibility
 
 - Avoid backward-compatibility hacks
   - Don't rename unused variables with underscores (`_var`)
