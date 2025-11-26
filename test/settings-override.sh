@@ -4,6 +4,9 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+USER_DIR="$REPO_DIR/user"
+
+mkdir -p "$USER_DIR"
 
 echo "=== Testing claude-md Override ==="
 
@@ -26,7 +29,7 @@ EOF
 
 "$REPO_DIR/bin/claude-md" >/dev/null 2>&1
 
-deny_count=$(jq '.permissions.deny | length' "$test_dir/.claude/settings.json")
+deny_count=$(jq '.permissions.deny | length' "$test_dir/.claude/settings.json" | tr -d '\r\n')
 if (( deny_count > 1 )); then
     echo "✓ Merged with distribution (count: $deny_count)"
 else
@@ -52,7 +55,7 @@ EOF
 
 "$REPO_DIR/bin/claude-md" >/dev/null 2>&1
 
-deny_count=$(jq '.permissions.deny | length' "$test_dir2/.claude/settings.json")
+deny_count=$(jq '.permissions.deny | length' "$test_dir2/.claude/settings.json" | tr -d '\r\n')
 if (( deny_count == 1 )); then
     echo "✓ Override applied (count: $deny_count)"
 else
