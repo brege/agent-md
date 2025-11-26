@@ -3,7 +3,21 @@ agent-md - Claude + Codex Manager
 
 Configuration templates and instructions for Claude Code and Codex.
 
-Modeled after `motlin/claude-code-prompts`_ but not as advanced. Also creates an AGENTS.md for Codex.
+Modeled after `motlin/claude-code-prompts`_.
+
+This repository creates a CLAUDE.md and settings.json for Claude Code and a monolithic AGENTS.md for Codex. The thought is to centralize configuration for the two agents in one place. Then, to distribute the agent configurations, you simply do
+
+.. code-block:: bash 
+    
+    agent-md
+
+in you project directory. The local project files like:
+
+- ``CLAUDE.local.md``
+- ``.claude/settings.local.json``
+- ``AGENTS.override.md``
+
+are not effected. These may be symlinked to `user/`, where you place all of your customizations, via ``stash-md``.
 
 .. _motlin/claude-code-prompts: https://github.com/motlin/claude-code-prompts/tree/7a68c0f
 
@@ -15,8 +29,7 @@ Installation
    ./install              # all commands to /usr/local/bin
    ./install --claude     # only claude-md
    ./install --codex      # only codex-md
-   ./install --agent      # only agent-md (requires both claude-md and codex-md)
-   ./install ~/bin        # custom path in $PATH
+   ./install ~/bin        # custom path in $PATH, defaults to /usr/local/bin
 
 This installs commands in your path.
 
@@ -43,13 +56,13 @@ Claude can be configured globally through a central ``CLAUDE.md`` file, and info
 
 This tool provides a builder for the global ``CLAUDE.md`` file through a collection of partials.
 
-- copies ``prompts/partials/instructions/`` to ``~/.claude/instructions/``
+- copies ``dist/instructions/`` to ``~/.claude/instructions/``
 - copies ``prompts/CLAUDE.md`` to ``~/.claude/CLAUDE.md`` with @instructions references intact
 - merges settings from modular JSON files:
 
-  - ``settings/settings.json``
-  - ``settings/partials/*.json`` (security-paths, git, installers, system-paths)
-  - ``user/settings/partials/*.json``
+  - ``dist/settings.json``
+  - ``dist/settings/*.json`` (security-paths, git, installers, system-paths)
+  - ``user/settings/*.json``
 
   into ``~/.claude/settings.json``
 
@@ -58,7 +71,7 @@ We leave local ``.claude/settings.local.json`` and ``CLAUDE.local.md`` untouched
 User Override Mode
 ~~~~~~~~~~~~~~~~~~~
 
-To use only custom settings without merging distribution defaults, set ``"override": true`` in ``user/settings/settings.json``. The override key is removed before writing to ``~/.claude/settings.json``.
+To use only custom settings without merging distribution defaults, set ``"override": true`` in ``user/settings.json``. The override key is removed before writing to ``~/.claude/settings.json``.
 
 .. code-block:: bash
 
@@ -78,16 +91,16 @@ Codex uses a local monolithic ``AGENTS.md`` file for each project. Codex support
 
 - expand ``@instructions/*.md`` from:
 
-  - ``prompts/partials/instructions/``
-  - ``user/prompts/partials/instructions/``
+  - ``dist/instructions/``
+  - ``user/instructions/``
 
   then write ``./AGENTS.md``
 
 - merge deny arrays from:
 
-  - ``settings/settings.json``
-  - ``settings/partials/*.json``
-  - ``user/settings/partials/*.json``
+  - ``dist/settings.json``
+  - ``dist/settings/*.json``
+  - ``user/settings/*.json``
   - ``./.claude/settings.json`` (project-local, if exists)
 
   then inject into ``./AGENTS.md``

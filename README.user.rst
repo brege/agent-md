@@ -9,27 +9,25 @@ Structure
 .. code-block:: text
 
    user/
-   ├── README.rst              symlink to ../README.user.rst
-   ├── prompts/
-   │   └── partials/
-   │       └── instructions/   custom instruction partials
-   ├── settings/
-   │   └── partials/           custom settings partials
+   ├── README.rst            symlink to ../README.user.rst
+   ├── agents/               custom agent partials
+   ├── instructions/         custom instruction partials
+   ├── settings/             custom settings fragments
    └── src/
-       ├── path/from/home/     stashed project configs
-       └── _/path/from/root/   stashed project configs
+       ├── path/from/home/   stashed project configs
+       └── _/path/from/root/ stashed project configs
 
 Usage
 -----
 
 **Extend prompts and settings**
-   Place custom partials in ``prompts/partials/instructions/`` and ``settings/partials/`` following the same structure as the base project. The build tools will automatically append them to the base versions.
+   Place custom partials in ``instructions/`` (and ``agents/`` if needed) plus JSON fragments in ``settings/`` following the same structure as the distribution files under ``dist/``. The build tools append them to the base versions.
 
    To completely replace a base partial instead of appending, start your file with ``@override`` on the first line:
 
    .. code-block:: bash
 
-      user/prompts/partials/instructions/file-restrictions.md
+      user/instructions/file-restrictions.md
       @override
       # File Access Restrictions
       (replacement content)
