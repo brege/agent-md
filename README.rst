@@ -1,25 +1,25 @@
-agent-md - Claude + Codex Manager
-=================================
+agent-md · Claude Code + Codex 
+==============================
 
-Configuration templates and instructions for Claude Code and Codex.
+Configuration templates and instructions for Claude Code and Codex cohabitation. **This tool is for those who use both.**
 
-Modeled after `motlin/claude-code-prompts`_.
+This tool creates a CLAUDE.md and settings.json for Claude Code and a monolithic AGENTS.md for Codex. This allows you to centralize configuration for the two agents in one place.
 
-This repository creates a CLAUDE.md and settings.json for Claude Code and a monolithic AGENTS.md for Codex. The thought is to centralize configuration for the two agents in one place. Then, to distribute the agent configurations, you simply do
+Then, to distribute the agent configurations, run
 
 .. code-block:: bash 
     
     agent-md
 
-in you project directory. The local project files like:
+in your project directory. Local project files like:
 
-- ``CLAUDE.local.md``
-- ``.claude/settings.local.json``
+- ``./CLAUDE.md``
+- ``./CLAUDE.local.md``
+- ``./.claude/settings.local.json``
 - ``AGENTS.override.md``
 
-are not effected. These may be symlinked to `user/`, where you place all of your customizations, via ``stash-md``.
-
-.. _motlin/claude-code-prompts: https://github.com/motlin/claude-code-prompts/tree/7a68c0f
+are not effected. These may be symlinked to `user/`, where you may place all of your customizations, via ``stash-md``. This schema allows appending or overriding the distribution prompts, `dist/**/*.md`, 
+through `user/**.*.md`. The top-level authority is local > `user` > `dist` > system.
 
 Installation
 ------------
@@ -47,7 +47,6 @@ This installs commands in your path.
 Configuration Builders
 ----------------------
 
-This tool is for those who use both Claude and Codex.
 
 **claude-md**
 '''''''''''''
