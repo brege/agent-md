@@ -1,5 +1,5 @@
-agent-md · Claude Code + Codex 
-==============================
+agent-md · interagent config manager 
+====================================
 
 Configuration templates and instructions for Claude Code and Codex cohabitation. **This tool is for those who use both.**
 
@@ -11,15 +11,15 @@ Then, to distribute the agent configurations, run
     
     agent-md
 
-in your project directory. Local project files like:
+in your project directory. Local project files like
 
 - ``./CLAUDE.md``
 - ``./CLAUDE.local.md``
 - ``./.claude/settings.local.json``
 - ``AGENTS.override.md``
 
-are not effected. These may be symlinked to `user/`, where you may place all of your customizations, via ``stash-md``. This schema allows appending or overriding the distribution prompts, `dist/**/*.md`, 
-through `user/**.*.md`. The top-level authority is local > `user` > `dist` > system.
+are not effected. These may be symlinked to ``user/``, where you may place all of your customizations, via ``stash-md``. This schema allows appending or overriding the distribution prompts, ``dist/**/*.md``, 
+through ``user/**.*.md``. The top-level authority is local > ``user`` > ``dist`` > system.
 
 Installation
 ------------
@@ -42,6 +42,8 @@ This installs commands in your path.
 | Codex  | ``codex-md``  | generates monolithic AGENTS.md from modular sources   |
 +--------+---------------+-------------------------------------------------------+
 | Agent  | ``agent-md``  | convenience wrapper that runs claude-md then codex-md |
++--------+---------------+-------------------------------------------------------+
+|        | ``stash-md``  | symlinks local agent configs to ``user/``             |
 +--------+---------------+-------------------------------------------------------+
 
 Configuration Builders
