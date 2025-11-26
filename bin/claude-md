@@ -18,9 +18,9 @@ rm -rf "$CLAUDE_DIR/instructions" "$CLAUDE_DIR/agents"
 mkdir -p "$CLAUDE_DIR/instructions" "$CLAUDE_DIR/agents"
 
 # Run generic handlers
-"$LIB_DIR/prompts/instructions.sh" "$REPO_DIR" "$CLAUDE_DIR"
-"$LIB_DIR/prompts/agents.sh" "$REPO_DIR" "$CLAUDE_DIR"
-"$LIB_DIR/settings.sh" "$REPO_DIR" "$CLAUDE_DIR"
+"$LIB_DIR/instructions" "$REPO_DIR" "$CLAUDE_DIR"
+"$LIB_DIR/agents" "$REPO_DIR" "$CLAUDE_DIR"
+"$LIB_DIR/settings" "$REPO_DIR" "$CLAUDE_DIR"
 
 # Copy CLAUDE.md template
 src="$REPO_DIR/prompts/CLAUDE.md"
@@ -31,11 +31,11 @@ if [[ ! -f "$dest" ]] || ! cmp -s "$src" "$dest"; then
 fi
 
 # Run special-case handlers from instructions.d/ (distribution first, then user)
-for instructions_dir in "$LIB_DIR/prompts/instructions.d" "$REPO_DIR/user/lib/prompts/instructions.d"; do
+for instructions_dir in "$LIB_DIR/instructions.d" "$REPO_DIR/user/lib/instructions.d"; do
     if [[ -d "$instructions_dir" ]]; then
         while IFS= read -r handler; do
             [[ -x "$handler" ]] && "$handler" "$REPO_DIR" "$CLAUDE_DIR"
-        done < <(find "$instructions_dir" -maxdepth 1 -type f -name "*.sh" | sort)
+        done < <(find "$instructions_dir" -maxdepth 1 -type f -perm -u+x | sort)
     fi
 done
 
