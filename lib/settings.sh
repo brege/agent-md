@@ -9,8 +9,8 @@ CLAUDE_DIR="${2:?CLAUDE_DIR required}"
 
 dest="$CLAUDE_DIR/settings.json"
 
-if [[ -f "$REPO_DIR/user/settings/settings.json" ]] && jq -e '.override == true' "$REPO_DIR/user/settings/settings.json" >/dev/null 2>&1; then
-    jq 'del(.override)' "$REPO_DIR/user/settings/settings.json" > "$dest"
+if [[ -f "$REPO_DIR/user/settings.json" ]] && jq -e '.override == true' "$REPO_DIR/user/settings.json" >/dev/null 2>&1; then
+    jq 'del(.override)' "$REPO_DIR/user/settings.json" > "$dest"
     echo "updated: settings.json (override)"
 else
     {
@@ -21,7 +21,7 @@ else
           },
           model: $base.model,
           alwaysThinkingEnabled: $base.alwaysThinkingEnabled
-        }' "$REPO_DIR/settings/settings.json" "$REPO_DIR/settings/partials"/*.json "$REPO_DIR/user/settings/partials"/*.json 2>/dev/null || cat "$REPO_DIR/settings/settings.json"
+        }' "$REPO_DIR/dist/settings.json" "$REPO_DIR/dist/settings"/*.json "$REPO_DIR/user/settings"/*.json 2>/dev/null || cat "$REPO_DIR/dist/settings.json"
     } > "$dest"
     echo "updated: settings.json"
 fi

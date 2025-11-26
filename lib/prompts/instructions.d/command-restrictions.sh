@@ -22,8 +22,8 @@ dest="$CLAUDE_DIR/settings.json"
             *) echo "- Deny: $rule" ;;
         esac
     done
-    if [[ -f "$REPO_DIR/user/prompts/partials/instructions/command-restrictions.md" ]]; then
+    if [[ -f "$REPO_DIR/user/instructions/command-restrictions.md" ]]; then
         echo ""
-        cat "$REPO_DIR/user/prompts/partials/instructions/command-restrictions.md"
+        cat "$REPO_DIR/user/instructions/command-restrictions.md"
     fi
 } > "$CLAUDE_DIR/instructions/command-restrictions.md"

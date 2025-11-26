@@ -7,11 +7,11 @@ set -euo pipefail
 REPO_DIR="${1:?REPO_DIR required}"
 CLAUDE_DIR="${2:?CLAUDE_DIR required}"
 
-if [[ -d "$REPO_DIR/prompts/partials/instructions" ]]; then
+if [[ -d "$REPO_DIR/dist/instructions" ]]; then
     while IFS= read -r src_file; do
         filename=$(basename "$src_file")
         dest_file="$CLAUDE_DIR/instructions/$filename"
-        user_file="$REPO_DIR/user/prompts/partials/instructions/$filename"
+        user_file="$REPO_DIR/user/instructions/$filename"
 
         if [[ -f "$user_file" ]] && head -1 "$user_file" | grep -q "^@override"; then
             tail -n +2 "$user_file" > "$dest_file"
@@ -24,5 +24,5 @@ if [[ -d "$REPO_DIR/prompts/partials/instructions" ]]; then
                 fi
             } > "$dest_file"
         fi
-    done < <(find "$REPO_DIR/prompts/partials/instructions" -maxdepth 1 -type f -name "*.md")
+    done < <(find "$REPO_DIR/dist/instructions" -maxdepth 1 -type f -name "*.md")
 fi

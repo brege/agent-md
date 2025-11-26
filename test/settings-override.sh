@@ -15,7 +15,7 @@ trap "rm -rf $test_dir" EXIT
 export HOME="$test_dir"
 mkdir -p "$test_dir/.claude"
 
-cat > "$REPO_DIR/user/settings/settings.json" << 'EOF'
+cat > "$REPO_DIR/user/settings.json" << 'EOF'
 {
   "override": false,
   "permissions": {
@@ -41,7 +41,7 @@ trap "rm -rf $test_dir2" EXIT
 
 export HOME="$test_dir2"
 
-cat > "$REPO_DIR/user/settings/settings.json" << 'EOF'
+cat > "$REPO_DIR/user/settings.json" << 'EOF'
 {
   "override": true,
   "permissions": {
@@ -67,6 +67,6 @@ else
     exit 1
 fi
 
-rm "$REPO_DIR/user/settings/settings.json"
+rm "$REPO_DIR/user/settings.json"
 echo ""
 echo "All tests passed"
