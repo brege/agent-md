@@ -99,6 +99,10 @@ fi
             *) echo "- Deny: $rule" ;;
         esac
     done
+    if [[ -f "$REPO_DIR/user/prompts/partials/instructions/command-restrictions.md" ]]; then
+        echo ""
+        cat "$REPO_DIR/user/prompts/partials/instructions/command-restrictions.md"
+    fi
 } > "$CLAUDE_DIR/instructions/command-restrictions.md"
 
 echo "Done. Global configuration initialized."
