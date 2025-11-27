@@ -29,5 +29,15 @@ if [ ! -f "$source_file" ]; then
 fi
 
 mkdir -p "$dest_dir"
-ln -s "$source_file" "$dest_file"
-echo "Linked: $source_file → $dest_file"
+
+if [ -L "$dest_file" ]; then
+    counter=1
+    while [ -f "$dest_dir/${filename}.$counter" ]; do
+        counter=$((counter + 1))
+    done
+    cp "$source_file" "$dest_dir/${filename}.$counter"
+    echo "Saved copy: $source_file → $dest_dir/${filename}.$counter"
+else
+    ln -s "$source_file" "$dest_file"
+    echo "Linked: $source_file → $dest_file"
+fi

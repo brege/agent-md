@@ -72,7 +72,7 @@ We leave local ``.claude/settings.local.json`` and ``CLAUDE.local.md`` untouched
 User Override Mode
 ~~~~~~~~~~~~~~~~~~~
 
-To use only custom settings without merging distribution defaults, set ``"override": true`` in ``user/settings.json``. The override key is removed before writing to ``~/.claude/settings.json``.
+To use only custom settings without merging distribution defaults, set ``"override": true`` in ``user/settings.json``. The override key does not transfer to ``~/.claude/settings.json``.
 
 .. code-block:: bash
 
