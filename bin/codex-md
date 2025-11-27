@@ -6,8 +6,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-src_template="$REPO_DIR/prompts/AGENTS.md"
-src_claude="$REPO_DIR/prompts/CLAUDE.md"
+src_template="$REPO_DIR/dist/AGENTS.md"
+src_claude="$REPO_DIR/dist/CLAUDE.md"
 src_settings="$REPO_DIR/dist/settings.json"
 
 # Create temp files

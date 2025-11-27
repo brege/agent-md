@@ -23,7 +23,7 @@ mkdir -p "$CLAUDE_DIR/instructions" "$CLAUDE_DIR/agents"
 "$LIB_DIR/settings" "$REPO_DIR" "$CLAUDE_DIR"
 
 # Copy CLAUDE.md template
-src="$REPO_DIR/prompts/CLAUDE.md"
+src="$REPO_DIR/dist/CLAUDE.md"
 dest="$CLAUDE_DIR/CLAUDE.md"
 if [[ ! -f "$dest" ]] || ! cmp -s "$src" "$dest"; then
     cp "$src" "$dest"

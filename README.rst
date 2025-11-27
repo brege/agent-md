@@ -58,7 +58,7 @@ Claude can be configured globally through a central ``CLAUDE.md`` file, and info
 This tool provides a builder for the global ``CLAUDE.md`` file through a collection of partials.
 
 - copies ``dist/instructions/`` to ``~/.claude/instructions/``
-- copies ``prompts/CLAUDE.md`` to ``~/.claude/CLAUDE.md`` with @instructions references intact
+- copies ``dist/CLAUDE.md`` to ``~/.claude/CLAUDE.md`` with @instructions references intact
 - merges settings from modular JSON files:
 
   - ``dist/settings.json``
