@@ -108,15 +108,15 @@ Codex uses a local monolithic ``AGENTS.md`` file for each project. Codex support
 
 If a local ``CLAUDE.local.md`` or ``./.claude/settings.json`` exists in the project root, **codex-md** uses them to build the full AGENTS.md file.
 
-**stash-md**
-''''''''''''
-
-Utility to link local markdown files into ``user/src/`` for project-specific configuration tracking.
-
 .. code-block:: bash
     
    ./install --codex
    codex-md
+
+**stash-md**
+''''''''''''
+
+Utility to link local markdown files into ``user/src/`` for project-specific configuration tracking.
 
 *reference:* `Codex AGENTS.md documentation`_
 
