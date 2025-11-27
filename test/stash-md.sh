@@ -145,7 +145,7 @@ test_directory_creation() {
 
 test_no_duplicate_symlinks() {
     echo ""
-    echo "=== Testing Duplicate Symlink Prevention ==="
+    echo "=== Testing Backup Copy Creation ==="
 
     local temp_home=$(mktemp -d)
     local temp_project="$temp_home/projects/test-project"
@@ -153,21 +153,37 @@ test_no_duplicate_symlinks() {
     trap "rm -rf $temp_home $temp_stash" EXIT
 
     mkdir -p "$temp_project"
-    echo "test content" > "$temp_project/AGENTS.md"
+    echo "test content v1" > "$temp_project/AGENTS.md"
 
     export HOME="$temp_home"
     cd "$temp_project"
 
     echo "Test 5a: Creating first symlink..."
     AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/stash-md" AGENTS.md
-    echo "✓ First symlink created"
 
-    echo "Test 5b: Attempting to create duplicate symlink..."
-    if AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/stash-md" AGENTS.md 2>/dev/null; then
-        echo "✗ stash-md should have failed for existing symlink"
-        return 1
+    local expected_link="$temp_stash/user/src/projects/test-project/AGENTS.md"
+    if [[ -L "$expected_link" ]]; then
+        echo "✓ First symlink created"
     else
-        echo "✓ stash-md correctly rejected duplicate symlink"
+        echo "✗ First symlink not created"
+        return 1
+    fi
+
+    echo "Test 5b: Running stash-md again saves numbered backup..."
+    echo "test content v2" > "$temp_project/AGENTS.md"
+    AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/stash-md" AGENTS.md
+
+    local backup_file="$temp_stash/user/src/projects/test-project/AGENTS.md.1"
+    if [[ -f "$backup_file" ]]; then
+        if grep -q "test content v2" "$backup_file"; then
+            echo "✓ stash-md created numbered backup with current content"
+        else
+            echo "✗ Backup file doesn't contain expected content"
+            return 1
+        fi
+    else
+        echo "✗ Backup file not created at: $backup_file"
+        return 1
     fi
 }
 
