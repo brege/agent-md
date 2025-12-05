@@ -8,9 +8,12 @@ REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 stash_files=()
 
+stash_mode=0
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -s|--stash)
+            stash_mode=1
             shift
             while [[ $# -gt 0 ]] && [[ "$1" != -* ]]; do
                 stash_files+=("$1")
@@ -24,7 +27,16 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [[ ${#stash_files[@]} -gt 0 ]]; then
+if [[ $stash_mode -eq 1 ]]; then
+    if [[ ${#stash_files[@]} -eq 0 ]]; then
+        for file in CLAUDE.md CLAUDE.local.md AGENTS.md .claude/settings.local.json; do
+            [[ -f "$file" ]] && stash_files+=("$file")
+        done
+        if [[ ${#stash_files[@]} -eq 0 ]]; then
+            echo "No config files found to stash"
+            exit 0
+        fi
+    fi
     "$REPO_DIR/lib/stash" "$REPO_DIR" "${stash_files[@]}"
 else
     "$SCRIPT_DIR/claude-md"
