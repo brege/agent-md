@@ -26,8 +26,8 @@ test_home_relative() {
 
     cd "$temp_project"
 
-    # Run stash-md with mocked agent-configs
-    AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/stash-md" AGENTS.md
+    # Run agent-md --stash with mocked agent-configs
+    AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/agent-md" --stash AGENTS.md
 
     # Check if symlink was created
     local expected_link="$temp_stash/user/src/projects/test-project/AGENTS.md"
@@ -67,8 +67,8 @@ test_root_relative() {
 
     cd "$temp_root"
 
-    # Run stash-md with mocked agent-configs
-    AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/stash-md" AGENTS.md
+    # Run agent-md --stash with mocked agent-configs
+    AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/agent-md" --stash AGENTS.md
 
     # Extract relative path from temp_root (should be something like tmp/stash-test-XXXXXX)
     local rel_path="${temp_root#/}"
@@ -106,11 +106,11 @@ test_missing_source() {
 
     echo "Test 3a: Attempting to stash non-existent file..."
 
-    if AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/stash-md" NONEXISTENT.md 2>/dev/null; then
-        echo "✗ stash-md should have failed for missing source"
+    if AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/agent-md" --stash NONEXISTENT.md 2>/dev/null; then
+        echo "✗ agent-md --stash should have failed for missing source"
         return 1
     else
-        echo "✓ stash-md correctly failed for missing source file"
+        echo "✓ agent-md --stash correctly failed for missing source file"
     fi
 }
 
@@ -131,7 +131,7 @@ test_directory_creation() {
 
     echo "Test 4a: Creating nested directory structure..."
 
-    AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/stash-md" AGENTS.md
+    AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/agent-md" --stash AGENTS.md
 
     local dest_dir="$temp_stash/user/src/deeply/nested/project/structure"
 
@@ -159,7 +159,7 @@ test_no_duplicate_symlinks() {
     cd "$temp_project"
 
     echo "Test 5a: Creating first symlink..."
-    AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/stash-md" AGENTS.md
+    AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/agent-md" --stash AGENTS.md
 
     local expected_link="$temp_stash/user/src/projects/test-project/AGENTS.md"
     if [[ -L "$expected_link" ]]; then
@@ -169,14 +169,14 @@ test_no_duplicate_symlinks() {
         return 1
     fi
 
-    echo "Test 5b: Running stash-md again saves numbered backup..."
+    echo "Test 5b: Running agent-md --stash again saves numbered backup..."
     echo "test content v2" > "$temp_project/AGENTS.md"
-    AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/stash-md" AGENTS.md
+    AGENT_CONFIGS_DIR="$temp_stash" "$BIN_DIR/agent-md" --stash AGENTS.md
 
     local backup_file="$temp_stash/user/src/projects/test-project/AGENTS.md.1"
     if [[ -f "$backup_file" ]]; then
         if grep -q "test content v2" "$backup_file"; then
-            echo "✓ stash-md created numbered backup with current content"
+            echo "✓ agent-md --stash created numbered backup with current content"
         else
             echo "✗ Backup file doesn't contain expected content"
             return 1
@@ -194,4 +194,4 @@ test_directory_creation || exit 1
 test_no_duplicate_symlinks || exit 1
 
 echo ""
-echo "All stash-md tests passed!"
+echo "All agent-md --stash tests passed!"

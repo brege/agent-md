@@ -1,0 +1,47 @@
+#!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Stash files into user/src directory with symlinks or backups
+
+set -euo pipefail
+
+REPO_DIR="${1:?REPO_DIR required}"
+shift
+
+if [[ $# -eq 0 ]]; then
+    echo "Usage: lib/stash <REPO_DIR> <filename> [<filename> ...]"
+    exit 1
+fi
+
+agent_configs_dir="${AGENT_CONFIGS_DIR:-$REPO_DIR}"
+
+for filename in "$@"; do
+    source_file="$PWD/$filename"
+
+    if [[ "$PWD" == "$HOME"* ]]; then
+        rel_path="${PWD#$HOME/}"
+        dest_dir="$agent_configs_dir/user/src/$rel_path"
+    else
+        rel_path="${PWD#/}"
+        dest_dir="$agent_configs_dir/user/src/_/$rel_path"
+    fi
+    dest_file="$dest_dir/$filename"
+
+    if [ ! -f "$source_file" ]; then
+        echo "Error: $source_file not found"
+        exit 1
+    fi
+
+    mkdir -p "$dest_dir"
+
+    if [ -L "$dest_file" ]; then
+        counter=1
+        while [ -f "$dest_dir/${filename}.$counter" ]; do
+            counter=$((counter + 1))
+        done
+        cp "$source_file" "$dest_dir/${filename}.$counter"
+        echo "Saved copy: $source_file → $dest_dir/${filename}.$counter"
+    else
+        ln -s "$source_file" "$dest_file"
+        echo "Linked: $source_file → $dest_file"
+    fi
+done
