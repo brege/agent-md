@@ -1,11 +1,17 @@
+====================================
 agent-md · interagent config manager 
 ====================================
 
-Configuration templates and instructions for Claude Code and Codex cohabitation. **This tool is for those who use both.**
+Configuration templates and instructions for Claude Code and Codex cohabitation, for those who may juggle both.
 
-This tool creates a CLAUDE.md and settings.json for Claude Code and a monolithic AGENTS.md for Codex. This allows you to centralize configuration for the two agents in one place.
+This tool creates a CLAUDE.md and settings.json for Claude Code and a monolithic AGENTS.md for Codex from a central source of partial prompts. It also provides a stash locker for local agent data, which may be useful when used in conjunction with my related cleanup utility, agent-janitor_.
 
-Then, to distribute the agent configurations, run
+.. _agent-janitor: https://github.com/brege/agent-janitor
+
+Usage
+-----
+
+The default configuration files are in ``dist/``. After running ``./install``, these config files are distributed to ``~/.claude/`` and ``./AGENTS.md`` via
 
 .. code-block:: bash 
     
@@ -18,8 +24,7 @@ in your project directory. Local project files like
 - ``./.claude/settings.local.json``
 - ``AGENTS.override.md``
 
-are not effected. These may be symlinked to ``user/``, where you may place all of your customizations, via ``agent-md --stash``. This schema allows appending or overriding the distribution prompts, ``dist/**/*.md``,
-through ``user/**.*.md``. The top-level authority is local > ``user`` > ``dist`` > system.
+are not effected. These may be symlinked to ``user/``, where you may place all of your customizations, via ``agent-md --stash``. This schema allows appending or overriding the distribution prompts, ``dist/**/*.md``, through ``user/**/*.md``. The top-level authority is local > ``user`` > ``dist`` > system.
 
 Installation
 ------------

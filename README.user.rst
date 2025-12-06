@@ -1,5 +1,6 @@
+==============================
 agent-md · user configurations
-===================
+==============================
 
 User-defined customizations, extensions, and project-specific configurations.
 

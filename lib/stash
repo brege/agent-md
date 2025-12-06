@@ -32,14 +32,32 @@ for filename in "$@"; do
     fi
 
     mkdir -p "$dest_dir"
+    mkdir -p "$(dirname "$dest_file")"
 
     if [ -L "$dest_file" ]; then
-        counter=1
-        while [ -f "$dest_dir/${filename}.$counter" ]; do
-            counter=$((counter + 1))
-        done
-        cp "$source_file" "$dest_dir/${filename}.$counter"
-        echo "Saved copy: $source_file → $dest_dir/${filename}.$counter"
+        if [ "$(readlink "$dest_file")" = "$source_file" ]; then
+            echo "Already linked: $source_file → $dest_file"
+        else
+            counter=1
+            backup_base="$dest_dir/$(basename "$filename")"
+            while [ -f "$backup_base.$counter" ] || [ -L "$backup_base.$counter" ]; do
+                counter=$((counter + 1))
+            done
+            cp "$source_file" "$backup_base.$counter"
+            echo "Saved copy: $source_file → $backup_base.$counter"
+        fi
+    elif [ -e "$dest_file" ]; then
+        if cmp -s "$source_file" "$dest_file"; then
+            echo "Content unchanged: $source_file ↔ $dest_file"
+        else
+            counter=1
+            backup_base="$dest_dir/$(basename "$filename")"
+            while [ -f "$backup_base.$counter" ] || [ -L "$backup_base.$counter" ]; do
+                counter=$((counter + 1))
+            done
+            cp "$source_file" "$backup_base.$counter"
+            echo "Saved copy: $source_file → $backup_base.$counter"
+        fi
     else
         ln -s "$source_file" "$dest_file"
         echo "Linked: $source_file → $dest_file"
