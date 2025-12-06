@@ -18,7 +18,7 @@ in your project directory. Local project files like
 - ``./.claude/settings.local.json``
 - ``AGENTS.override.md``
 
-are not effected. These may be symlinked to ``user/``, where you may place all of your customizations, via ``stash-md``. This schema allows appending or overriding the distribution prompts, ``dist/**/*.md``, 
+are not effected. These may be symlinked to ``user/``, where you may place all of your customizations, via ``agent-md --stash``. This schema allows appending or overriding the distribution prompts, ``dist/**/*.md``,
 through ``user/**.*.md``. The top-level authority is local > ``user`` > ``dist`` > system.
 
 Installation
@@ -33,18 +33,16 @@ Installation
 
 This installs commands in your path.
 
-+--------+---------------+-------------------------------------------------------+
-| agent  | command       | description                                           |
-+========+===============+=======================================================+
-| Claude | ``claude-md`` | merges prompts and agents, copies CLAUDE.md and       |
-|        |               | settings.json                                         |
-+--------+---------------+-------------------------------------------------------+
-| Codex  | ``codex-md``  | generates monolithic AGENTS.md from modular sources   |
-+--------+---------------+-------------------------------------------------------+
-| Agent  | ``agent-md``  | convenience wrapper that runs claude-md then codex-md |
-+--------+---------------+-------------------------------------------------------+
-|        | ``stash-md``  | symlinks local agent configs to ``user/``             |
-+--------+---------------+-------------------------------------------------------+
++--------+--------------------+-------------------------------------------------------+
+| agent  | command            | description                                           |
++========+====================+=======================================================+
+| Claude | ``claude-md``      | merges prompts and agents, copies CLAUDE.md and       |
+|        |                    | settings.json                                         |
++--------+--------------------+-------------------------------------------------------+
+| Codex  | ``codex-md``       | generates monolithic AGENTS.md from modular sources   |
++--------+--------------------+-------------------------------------------------------+
+| Agent  | ``agent-md``       | runs claude-md then codex-md                          |
++--------+--------------------+-------------------------------------------------------+
 
 Configuration Builders
 ----------------------
@@ -113,14 +111,21 @@ If a local ``CLAUDE.local.md`` or ``./.claude/settings.json`` exists in the proj
    ./install --codex
    codex-md
 
-**stash-md**
-''''''''''''
-
-Utility to link local markdown files into ``user/src/`` for project-specific configuration tracking.
-
 *reference:* `Codex AGENTS.md documentation`_
 
 .. _`Codex AGENTS.md documentation`: https://developers.openai.com/codex/guides/agents-md
+
+**agent-md**
+''''''''''''
+
+If you do use both agents, you can run **agent-md** in your project to generate the configuration files for **codex-md** and **claude-md**:
+
+.. code-block:: bash
+
+   ./install
+   agent-md
+
+This will generate ``~/.claude/CLAUDE.md``, ``~/.claude/settings.json`` and ``./AGENTS.md``. Use ``agent-md --stash`` to symlink and store versions of your **local** configuration files (``./CLAUDE.local.md``,  ``./.claude/settings.local.json``, ``AGENTS.override.md``) in ``user/src/``.
 
 License
 -------
