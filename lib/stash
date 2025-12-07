@@ -36,14 +36,32 @@ for filename in "$@"; do
 
     if [ -L "$dest_file" ]; then
         if [ "$(readlink "$dest_file")" = "$source_file" ]; then
-            echo "Already linked: $source_file → $dest_file"
+            backup_base="$dest_dir/$(basename "$filename")"
+            counter=1
+            latest_backup=""
+            while [ -f "$backup_base.$counter" ] || [ -L "$backup_base.$counter" ]; do
+                latest_backup="$backup_base.$counter"
+                counter=$((counter + 1))
+            done
+
+            if [ -z "$latest_backup" ]; then
+                cp "$source_file" "$backup_base.1"
+                echo "Saved copy: $source_file → $backup_base.1"
+            elif ! cmp -s "$source_file" "$latest_backup"; then
+                cp "$source_file" "$backup_base.$counter"
+                echo "Saved copy: $source_file → $backup_base.$counter"
+            else
+                echo "Already linked: $source_file → $dest_file"
+            fi
         else
             counter=1
             backup_base="$dest_dir/$(basename "$filename")"
             while [ -f "$backup_base.$counter" ] || [ -L "$backup_base.$counter" ]; do
                 counter=$((counter + 1))
             done
-            cp "$source_file" "$backup_base.$counter"
+            cp "$(readlink "$dest_file")" "$backup_base.$counter"
+            rm "$dest_file"
+            ln -s "$source_file" "$dest_file"
             echo "Saved copy: $source_file → $backup_base.$counter"
         fi
     elif [ -e "$dest_file" ]; then
