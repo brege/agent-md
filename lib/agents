@@ -14,10 +14,12 @@ if [[ -d "$REPO_DIR/dist/agents" ]]; then
         filename=$(basename "$src_file")
         dest_file="$CLAUDE_DIR/agents/$filename"
         user_file="$REPO_DIR/user/agents/$filename"
+        tmp_file=$(mktemp)
+        trap "rm -f $tmp_file" RETURN
         processed_files+=("$filename")
 
         if [[ -f "$user_file" ]] && head -1 "$user_file" | grep -q "^@override"; then
-            tail -n +2 "$user_file" > "$dest_file"
+            tail -n +2 "$user_file" > "$tmp_file"
         else
             {
                 cat "$src_file"
@@ -25,7 +27,11 @@ if [[ -d "$REPO_DIR/dist/agents" ]]; then
                     echo ""
                     cat "$user_file"
                 fi
-            } > "$dest_file"
+            } > "$tmp_file"
+        fi
+
+        if [[ ! -f "$dest_file" ]] || ! cmp -s "$tmp_file" "$dest_file"; then
+            mv "$tmp_file" "$dest_file"
         fi
     done < <(find "$REPO_DIR/dist/agents" -maxdepth 1 -type f -name "*.md")
 fi
@@ -35,7 +41,9 @@ if [[ -d "$REPO_DIR/user/agents" ]]; then
         filename=$(basename "$user_file")
         if [[ ! " ${processed_files[@]} " =~ " ${filename} " ]]; then
             dest_file="$CLAUDE_DIR/agents/$filename"
-            cp "$user_file" "$dest_file"
+            if [[ ! -f "$dest_file" ]] || ! cmp -s "$user_file" "$dest_file"; then
+                cp "$user_file" "$dest_file"
+            fi
         fi
     done < <(find "$REPO_DIR/user/agents" -maxdepth 1 -type f -name "*.md")
 fi

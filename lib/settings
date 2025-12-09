@@ -8,10 +8,15 @@ REPO_DIR="${1:?REPO_DIR required}"
 CLAUDE_DIR="${2:?CLAUDE_DIR required}"
 
 dest="$CLAUDE_DIR/settings.json"
+tmp_file=$(mktemp)
+trap "rm -f $tmp_file" EXIT
 
 if [[ -f "$REPO_DIR/user/settings.json" ]] && jq -e '.override == true' "$REPO_DIR/user/settings.json" >/dev/null 2>&1; then
-    jq 'del(.override)' "$REPO_DIR/user/settings.json" > "$dest"
-    echo "claude: settings.json merged (override)"
+    jq 'del(.override)' "$REPO_DIR/user/settings.json" > "$tmp_file"
+    if [[ ! -f "$dest" ]] || ! cmp -s "$tmp_file" "$dest"; then
+        mv "$tmp_file" "$dest"
+        echo "claude: settings.json merged (override)"
+    fi
 else
     {
         jq -s '.[0] as $base | {
@@ -22,6 +27,9 @@ else
           model: $base.model,
           alwaysThinkingEnabled: $base.alwaysThinkingEnabled
         }' "$REPO_DIR/dist/settings.json" "$REPO_DIR/dist/settings"/*.json "$REPO_DIR/user/settings"/*.json 2>/dev/null || cat "$REPO_DIR/dist/settings.json"
-    } > "$dest"
-    echo "claude: settings.json merged"
+    } > "$tmp_file"
+    if [[ ! -f "$dest" ]] || ! cmp -s "$tmp_file" "$dest"; then
+        mv "$tmp_file" "$dest"
+        echo "claude: settings.json merged"
+    fi
 fi

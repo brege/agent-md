@@ -11,23 +11,40 @@ LIB_DIR="$REPO_DIR/lib"
 
 mkdir -p "$CLAUDE_DIR"
 
-echo "claude: Preparing config merging with dist and user."
-
 # Remove old symlinks/directories and create fresh directories with merged content
 rm -rf "$CLAUDE_DIR/instructions" "$CLAUDE_DIR/agents"
 mkdir -p "$CLAUDE_DIR/instructions" "$CLAUDE_DIR/agents"
 
-# Run generic handlers
-"$LIB_DIR/instructions" "$REPO_DIR" "$CLAUDE_DIR"
-"$LIB_DIR/agents" "$REPO_DIR" "$CLAUDE_DIR"
-"$LIB_DIR/settings" "$REPO_DIR" "$CLAUDE_DIR"
+# Run generic handlers and track what changed
+instructions_output=$("$LIB_DIR/instructions" "$REPO_DIR" "$CLAUDE_DIR" 2>&1)
+if [[ -n "$instructions_output" ]]; then
+    echo "$instructions_output"
+else
+    echo "claude: instructions unchanged"
+fi
+
+agents_output=$("$LIB_DIR/agents" "$REPO_DIR" "$CLAUDE_DIR" 2>&1)
+if [[ -n "$agents_output" ]]; then
+    echo "$agents_output"
+else
+    echo "claude: agents unchanged"
+fi
+
+settings_output=$("$LIB_DIR/settings" "$REPO_DIR" "$CLAUDE_DIR" 2>&1)
+if [[ -n "$settings_output" ]]; then
+    echo "$settings_output"
+else
+    echo "claude: settings unchanged"
+fi
 
 # Copy CLAUDE.md template
 src="$REPO_DIR/dist/CLAUDE.md"
 dest="$CLAUDE_DIR/CLAUDE.md"
 if [[ ! -f "$dest" ]] || ! cmp -s "$src" "$dest"; then
     cp "$src" "$dest"
-    echo "claude: Global CLAUDE.md updated."
+    echo "claude: CLAUDE.md updated"
+else
+    echo "claude: CLAUDE.md unchanged"
 fi
 
 # Append user-only instructions (not in dist/)
@@ -56,9 +73,7 @@ fi
 for instructions_dir in "$LIB_DIR/instructions.d" "$REPO_DIR/user/lib/instructions.d"; do
     if [[ -d "$instructions_dir" ]]; then
         while IFS= read -r handler; do
-            [[ -x "$handler" ]] && "$handler" "$REPO_DIR" "$CLAUDE_DIR"
+            [[ -x "$handler" ]] && "$handler" "$REPO_DIR" "$CLAUDE_DIR" 2>&1
         done < <(find "$instructions_dir" -maxdepth 1 -type f -perm -u+x | sort)
     fi
 done
-
-echo "claude: Done."

@@ -112,6 +112,9 @@ sed -i "/@instructions/d" "$tmp_out"
 sed -i "/@restrictions/r $tmp_restr" "$tmp_out"
 sed -i "/@restrictions/d" "$tmp_out"
 
-mv "$tmp_out" AGENTS.md
-
-echo "codex: Generated AGENTS.md"
+if [[ ! -f AGENTS.md ]] || ! cmp -s "$tmp_out" AGENTS.md; then
+    mv "$tmp_out" AGENTS.md
+    echo "codex: Generated AGENTS.md"
+else
+    echo "codex: AGENTS.md unchanged"
+fi
