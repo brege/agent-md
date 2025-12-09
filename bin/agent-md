@@ -12,6 +12,14 @@ stash_mode=0
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        -h|--help)
+            echo "Usage: agent-md [options]"
+            echo ""
+            echo "Options:"
+            echo "  -s, --stash [files]    stash local config files (CLAUDE.local.md, AGENTS.md, ..)"
+            echo "  -h, --help             show this help text"
+            exit 0
+            ;;
         -s|--stash)
             stash_mode=1
             shift

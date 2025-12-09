@@ -11,7 +11,7 @@ dest="$CLAUDE_DIR/settings.json"
 
 if [[ -f "$REPO_DIR/user/settings.json" ]] && jq -e '.override == true' "$REPO_DIR/user/settings.json" >/dev/null 2>&1; then
     jq 'del(.override)' "$REPO_DIR/user/settings.json" > "$dest"
-    echo "updated: settings.json (override)"
+    echo "claude: settings.json merged (override)"
 else
     {
         jq -s '.[0] as $base | {
@@ -23,5 +23,5 @@ else
           alwaysThinkingEnabled: $base.alwaysThinkingEnabled
         }' "$REPO_DIR/dist/settings.json" "$REPO_DIR/dist/settings"/*.json "$REPO_DIR/user/settings"/*.json 2>/dev/null || cat "$REPO_DIR/dist/settings.json"
     } > "$dest"
-    echo "updated: settings.json"
+    echo "claude: settings.json merged"
 fi

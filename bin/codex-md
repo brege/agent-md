@@ -114,4 +114,4 @@ sed -i "/@restrictions/d" "$tmp_out"
 
 mv "$tmp_out" AGENTS.md
 
-echo "Generated AGENTS.md from agent-md"
+echo "codex: Generated AGENTS.md"
