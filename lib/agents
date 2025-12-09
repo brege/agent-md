@@ -7,11 +7,14 @@ set -euo pipefail
 REPO_DIR="${1:?REPO_DIR required}"
 CLAUDE_DIR="${2:?CLAUDE_DIR required}"
 
+processed_files=()
+
 if [[ -d "$REPO_DIR/dist/agents" ]]; then
     while IFS= read -r src_file; do
         filename=$(basename "$src_file")
         dest_file="$CLAUDE_DIR/agents/$filename"
         user_file="$REPO_DIR/user/agents/$filename"
+        processed_files+=("$filename")
 
         if [[ -f "$user_file" ]] && head -1 "$user_file" | grep -q "^@override"; then
             tail -n +2 "$user_file" > "$dest_file"
@@ -25,4 +28,14 @@ if [[ -d "$REPO_DIR/dist/agents" ]]; then
             } > "$dest_file"
         fi
     done < <(find "$REPO_DIR/dist/agents" -maxdepth 1 -type f -name "*.md")
+fi
+
+if [[ -d "$REPO_DIR/user/agents" ]]; then
+    while IFS= read -r user_file; do
+        filename=$(basename "$user_file")
+        if [[ ! " ${processed_files[@]} " =~ " ${filename} " ]]; then
+            dest_file="$CLAUDE_DIR/agents/$filename"
+            cp "$user_file" "$dest_file"
+        fi
+    done < <(find "$REPO_DIR/user/agents" -maxdepth 1 -type f -name "*.md")
 fi
