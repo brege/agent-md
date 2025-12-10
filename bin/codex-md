@@ -62,25 +62,25 @@ done < "$src_claude" > "$tmp_instr"
     # Collect and deduplicate deny rules from all sources
     {
         # Base settings (security-sensitive paths)
-        jq -r '.permissions.deny[]' "$src_settings" 2>/dev/null
+        jq -r '.permissions.deny[]? // empty' "$src_settings" 2>/dev/null
 
         # Modular settings files (all .json files in dist/settings/)
         for json_file in "$REPO_DIR/dist/settings"/*.json; do
             if [[ -f "$json_file" ]]; then
-                jq -r '.permissions.deny[]' "$json_file" 2>/dev/null
+                jq -r '.permissions.deny[]? // empty' "$json_file" 2>/dev/null
             fi
         done
 
         # User augmentation settings (all .json files in user/settings/)
         for json_file in "$REPO_DIR/user/settings"/*.json; do
             if [[ -f "$json_file" ]]; then
-                jq -r '.permissions.deny[]' "$json_file" 2>/dev/null
+                jq -r '.permissions.deny[]? // empty' "$json_file" 2>/dev/null
             fi
         done
 
         # Project-local runtime settings if they exist
         if [[ -f "./.claude/settings.local.json" ]]; then
-            jq -r '.permissions.deny[]' "./.claude/settings.local.json" 2>/dev/null
+            jq -r '.permissions.deny[]? // empty' "./.claude/settings.local.json" 2>/dev/null
         fi
     } | sort -u | while read -r rule; do
         case "$rule" in
