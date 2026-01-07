@@ -11,8 +11,7 @@ LIB_DIR="$REPO_DIR/lib"
 
 mkdir -p "$CLAUDE_DIR"
 
-# Remove old symlinks/directories and create fresh directories with merged content
-rm -rf "$CLAUDE_DIR/instructions" "$CLAUDE_DIR/agents"
+# Create directories for merged content
 mkdir -p "$CLAUDE_DIR/instructions" "$CLAUDE_DIR/agents"
 
 # Run generic handlers and track what changed

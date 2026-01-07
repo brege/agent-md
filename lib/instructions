@@ -7,20 +7,32 @@ set -euo pipefail
 REPO_DIR="${1:?REPO_DIR required}"
 CLAUDE_DIR="${2:?CLAUDE_DIR required}"
 
+updated_files=()
+updated_sources=()
+
 if [[ -d "$REPO_DIR/dist/instructions" ]]; then
     while IFS= read -r src_file; do
         filename=$(basename "$src_file")
+        handler_name="${filename%.md}"
+        dist_handler="$REPO_DIR/lib/instructions.d/$handler_name"
+        user_handler="$REPO_DIR/user/lib/instructions.d/$handler_name"
+        if [[ -x "$dist_handler" ]] || [[ -x "$user_handler" ]]; then
+            continue
+        fi
         dest_file="$CLAUDE_DIR/instructions/$filename"
         user_file="$REPO_DIR/user/instructions/$filename"
         tmp_file=$(mktemp)
         trap "rm -f $tmp_file" RETURN
 
+        source_label="dist"
         if [[ -f "$user_file" ]] && head -1 "$user_file" | grep -q "^@override"; then
+            source_label="user"
             tail -n +2 "$user_file" > "$tmp_file"
         else
             {
                 cat "$src_file"
                 if [[ -f "$user_file" ]]; then
+                    source_label="dist+user"
                     echo ""
                     cat "$user_file"
                 fi
@@ -29,6 +41,16 @@ if [[ -d "$REPO_DIR/dist/instructions" ]]; then
 
         if [[ ! -f "$dest_file" ]] || ! cmp -s "$tmp_file" "$dest_file"; then
             mv "$tmp_file" "$dest_file"
+            updated_files+=("$filename")
+            updated_sources+=("$source_label")
         fi
     done < <(find "$REPO_DIR/dist/instructions" -maxdepth 1 -type f -name "*.md")
+fi
+
+if [[ ${#updated_files[@]} -gt 0 ]]; then
+    for index in "${!updated_files[@]}"; do
+        filename="${updated_files[$index]}"
+        source_label="${updated_sources[$index]}"
+        printf "%s/: %s updated\n" "$source_label" "$CLAUDE_DIR/instructions/$filename"
+    done
 fi
