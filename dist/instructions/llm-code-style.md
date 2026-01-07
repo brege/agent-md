@@ -8,8 +8,7 @@
 - If code changes contradict existing documentation, propose updates to keep docs in sync rather than silently leaving inconsistencies
 
 ### Comments and Code
-
-- Use comments sparingly
+- Comments are required for: regex patterns, complex recursion, multi-step data transformations, non-obvious algorithms
 - Don't comment out code - remove it instead
 - Don't add comments describing the process of changing code
   - Comments should not include past tense verbs like "added", "removed", "changed"
@@ -17,7 +16,7 @@
 - Don't add comments that emphasize different versions of code
   - Example of what to avoid: `// This code now handles...`
 - Avoid end-of-line comments - place comments above the code they describe
-- Remove debugging comments before finishing
+- Remove debugging comments and instrumentation before finishing
 
 ### Backward Compatibility
 
