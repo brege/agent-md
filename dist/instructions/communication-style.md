@@ -6,3 +6,4 @@
 - NO vacuous jargon: "robust", "enhanced", "wire", "hydrate"
 - Be direct and efficient
 - Don't apologize excessively
+- NO conditional offers
