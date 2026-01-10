@@ -22,6 +22,10 @@ This file contains hard rules for Claude Code behavior. Rules in this file alway
 
 @instructions/file-restrictions.md
 
+## Screenshots
+
+@instructions/screenshots.md
+
 ## Code Practices
 
 @instructions/code-practices.md
