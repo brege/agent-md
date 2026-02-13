@@ -2,7 +2,16 @@
   "permissions": {
     "deny": [
       "Bash(rm -rf:*)",
-      "Bash(rm -f:*)"
+      "Bash(rm -f:*)",
+      "Bash(python -c:*)",
+      "Bash(python <<:*)",
+      "Bash(node -e:*)",
+      "Bash(cat <<:*)",
+      "Bash(sh <<:*)",
+      "Bash(bash <<:*)",
+      "Bash(perl -e:*)",
+      "Bash(ruby -e:*)",
+      "Bash(envsubst <<:*)"
     ]
   }
 }
