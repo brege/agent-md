@@ -6,13 +6,13 @@ on:
     paths:
       - 'bin/**'
       - 'test/**'
-      - '.github/workflows/test-override.yml'
+      - '.github/workflows/test.yml'
   pull_request:
     branches: [main]
     paths:
       - 'bin/**'
       - 'test/**'
-      - '.github/workflows/test-override.yml'
+      - '.github/workflows/test.yml'
   workflow_dispatch:
 
 jobs:
