@@ -17,20 +17,50 @@ tmp_restr=$(mktemp)
 tmp_out=$(mktemp)
 trap "rm -f $tmp_local $tmp_instr $tmp_restr $tmp_out" EXIT
 
-# Process local CLAUDE.local.md if it exists
-if [[ -f "./CLAUDE.local.md" ]]; then
-    while IFS= read -r line; do
-        if [[ $line =~ ^@instructions/(.+)\.md$ ]]; then
-            include_file="$REPO_DIR/dist/instructions/${BASH_REMATCH[1]}.md"
-            if [[ -f "$include_file" ]]; then
-                tail -n +2 "$include_file" | awk 'NF {p=1} p'
+process_local_claude_file() {
+    local source_file="$1"
+    local first_line
+    first_line=$(head -1 "$source_file" 2>/dev/null || true)
+
+    if [[ -s "$tmp_local" ]]; then
+        echo "" >> "$tmp_local"
+    fi
+
+    if [[ "$first_line" =~ ^@override ]]; then
+        tail -n +2 "$source_file" | while IFS= read -r line; do
+            if [[ $line =~ ^@instructions/(.+)\.md$ ]]; then
+                include_file="$REPO_DIR/dist/instructions/${BASH_REMATCH[1]}.md"
+                if [[ -f "$include_file" ]]; then
+                    tail -n +2 "$include_file" | awk 'NF {p=1} p'
+                else
+                    echo "$line"
+                fi
             else
                 echo "$line"
             fi
-        else
-            echo "$line"
-        fi
-    done < "./CLAUDE.local.md" > "$tmp_local"
+        done >> "$tmp_local"
+    else
+        while IFS= read -r line; do
+            if [[ $line =~ ^@instructions/(.+)\.md$ ]]; then
+                include_file="$REPO_DIR/dist/instructions/${BASH_REMATCH[1]}.md"
+                if [[ -f "$include_file" ]]; then
+                    tail -n +2 "$include_file" | awk 'NF {p=1} p'
+                else
+                    echo "$line"
+                fi
+            else
+                echo "$line"
+            fi
+        done < "$source_file" >> "$tmp_local"
+    fi
+}
+
+# Process local CLAUDE.md and CLAUDE.local.md if they exist
+if [[ -f "./CLAUDE.md" ]]; then
+    process_local_claude_file "./CLAUDE.md"
+fi
+if [[ -f "./CLAUDE.local.md" ]]; then
+    process_local_claude_file "./CLAUDE.local.md"
 fi
 
 # Expand @instructions/* references in base CLAUDE.md
