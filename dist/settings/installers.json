@@ -2,6 +2,9 @@
   "permissions": {
     "deny": [
       "Bash(sudo:*)",
+      "Bash(su:*)",
+      "Bash(cargo install:*)",
+      "Bash(go install:*)",
       "Bash(uv pip install:*)",
       "Bash(uv tool install:*)",
       "Bash(pipx install:*)",

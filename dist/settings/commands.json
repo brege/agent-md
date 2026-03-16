@@ -1,6 +1,9 @@
 {
   "permissions": {
     "deny": [
+      "Bash(sudo:*)",
+      "Bash(su:*)",
+      "Bash(ssh:*)",
       "Bash(rm -rf:*)",
       "Bash(rm -f:*)",
       "Bash(python -c:*)",
