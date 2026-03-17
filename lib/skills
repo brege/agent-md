@@ -1,0 +1,62 @@
+#!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Deploy agent files as Codex skills to ~/.codex/skills/
+
+set -euo pipefail
+
+REPO_DIR="${1:?REPO_DIR required}"
+CODEX_DIR="$HOME/.codex"
+SKILLS_DIR="$CODEX_DIR/skills"
+
+[[ -d "$CODEX_DIR" ]] || exit 0
+
+mkdir -p "$SKILLS_DIR"
+
+deploy_skill() {
+    local src_file="$1"
+    local name
+    name=$(basename "$src_file" .md)
+    local skill_dir="$SKILLS_DIR/$name"
+    local dest="$skill_dir/SKILL.md"
+    local tmp
+    tmp=$(mktemp)
+    trap "rm -f $tmp" RETURN
+
+    # Strip Claude-specific frontmatter fields
+    awk '
+        /^---[[:space:]]*$/ && !in_front { in_front=1; print; next }
+        /^---[[:space:]]*$/ && in_front  { in_front=0; print; next }
+        in_front && /^(model|color|tools)[[:space:]]*:/ { next }
+        { print }
+    ' "$src_file" > "$tmp"
+
+    mkdir -p "$skill_dir"
+    if [[ ! -f "$dest" ]] || ! cmp -s "$tmp" "$dest"; then
+        mv "$tmp" "$dest"
+        echo "codex: skill $name updated"
+    fi
+}
+
+processed=()
+
+if [[ -d "$REPO_DIR/dist/agents" ]]; then
+    while IFS= read -r src_file; do
+        filename=$(basename "$src_file")
+        user_file="$REPO_DIR/user/agents/$filename"
+        if [[ -f "$user_file" ]] && head -1 "$user_file" | grep -q "^@override"; then
+            deploy_skill "$user_file"
+        else
+            deploy_skill "$src_file"
+        fi
+        processed+=("$filename")
+    done < <(find "$REPO_DIR/dist/agents" -maxdepth 1 -type f -name "*.md")
+fi
+
+if [[ -d "$REPO_DIR/user/agents" ]]; then
+    while IFS= read -r user_file; do
+        filename=$(basename "$user_file")
+        if [[ ! " ${processed[*]} " =~ " ${filename} " ]]; then
+            deploy_skill "$user_file"
+        fi
+    done < <(find "$REPO_DIR/user/agents" -maxdepth 1 -type f -name "*.md")
+fi

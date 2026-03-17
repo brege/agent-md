@@ -148,3 +148,8 @@ if [[ ! -f AGENTS.md ]] || ! cmp -s "$tmp_out" AGENTS.md; then
 else
     echo "codex: AGENTS.md unchanged"
 fi
+
+skills_output=$("$REPO_DIR/lib/skills" "$REPO_DIR" 2>&1) || true
+if [[ -n "$skills_output" ]]; then
+    echo "$skills_output"
+fi

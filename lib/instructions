@@ -34,7 +34,7 @@ if [[ -d "$REPO_DIR/dist/instructions" ]]; then
                 if [[ -f "$user_file" ]]; then
                     source_label="dist+user"
                     echo ""
-                    cat "$user_file"
+                    tail -n +2 "$user_file"
                 fi
             } > "$tmp_file"
         fi
