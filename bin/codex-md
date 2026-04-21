@@ -142,7 +142,15 @@ sed -i "/@instructions/d" "$tmp_out"
 sed -i "/@restrictions/r $tmp_restr" "$tmp_out"
 sed -i "/@restrictions/d" "$tmp_out"
 
-if [[ ! -f AGENTS.md ]] || ! cmp -s "$tmp_out" AGENTS.md; then
+agents_tracked=0
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1 \
+    && git ls-files --error-unmatch AGENTS.md >/dev/null 2>&1; then
+    agents_tracked=1
+fi
+
+if [[ $agents_tracked -eq 1 ]]; then
+    echo "codex: AGENTS.md is tracked; leaving unchanged"
+elif [[ ! -f AGENTS.md ]] || ! cmp -s "$tmp_out" AGENTS.md; then
     mv "$tmp_out" AGENTS.md
     echo "codex: Generated AGENTS.md"
 else
